@@ -63,6 +63,10 @@ WORD_FOR_REPLACE = {
 	'1' : '4'
 }
 
+__file_kd_wilayah = open(os.path.join(os.getcwd(),'../kode_wilayah.json'))
+KODE_WILAYAH_JSON = json.loads(__file_kd_wilayah.read())
+KODE_WILAYAH_LIST = [i for i in KODE_WILAYAH_JSON.keys()]
+
 # V4l2 Camera control
 '''
 exposure_auto 0x009a0901 (bool)   			: default=1 value=1
