@@ -1,1 +1,2 @@
 from .license_plate_detection import LicensePlateDetection
+from .license_plate_ocr import OpticalCharacterRecognition
