@@ -27,7 +27,7 @@ def detection_object(image):
         img=image, results=result_detection, min_confidence=0.0
     )
     if len(license_plate[0]) >=1 and license_plate[1] > 0 and len(license_plate[2]) == 4:
-        logging.info(f'Got license plate detection confidence : {round((license_plate[1], 2)*100)} %')
+        logging.info(f'Got license plate detection confidence : {round(license_plate[1], 2)*100} %')
     else: logging.info(f'License plate not found')
     return license_plate
 
