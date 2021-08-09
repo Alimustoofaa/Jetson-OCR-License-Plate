@@ -1,5 +1,6 @@
 import cv2
 
+from .logger import logging
 from src.schema.config_ocr import ConfigOcr
 from src.app import LicensePlateDetection
 from src.app import OpticalCharacterRecognition
@@ -26,8 +27,8 @@ def detection_object(image):
         img=image, results=result_detection, min_confidence=0.0
     )
     if len(license_plate[0]) >=1 and license_plate[1] > 0 and len(license_plate[2]) == 4:
-        print(f'Got license plate detection confidence : {round(license_plate[1], 2)} %')
-    else: print(f'License plate not found')
+        logging.info(f'Got license plate detection confidence : {round((license_plate[1], 2)*100)} %')
+    else: logging.info(f'License plate not found')
     return license_plate
 
 def resize(image, height_percent=180, width_percent=180):
@@ -44,7 +45,7 @@ def resize(image, height_percent=180, width_percent=180):
 	width = int(image.shape[1] * width_percent / 100)
 	dim = (width, height)
 	new_img = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
-	print(f'Resize image to : {new_img.shape}')
+	logging.info(f'Resize image to : {new_img.shape}')
 	return new_img
 
 def detect_char(image, output=False):
@@ -58,9 +59,9 @@ def detect_char(image, output=False):
     '''
     detected_char = ocr.detect_char(image)
     if detected_char[0]:
-        print(f'Found text in image : {" ".join([str(i) for i in detected_char[0]])}')
+        logging.info(f'Found text in image : {" ".join([str(i) for i in detected_char[0]])}')
     else:
-        print(f'Not found text in image')
+        logging.info(f'Not found text in image')
 
     if output:
         results = detected_char[0][0]
@@ -104,5 +105,5 @@ def read_text(image, position_text='horizontal', clasess_name='license_plate'):
     results = ocr.ocr_image(image=image, config=config)
     if position_text == 'horizontal': results.sort(reverse=False)
     else : results = results
-    print(f'Ocr {clasess_name} : {" ".join([i[1] for i in results])}')
+    logging.info(f'Ocr {clasess_name} : {" ".join([i[1] for i in results])}')
     return results
