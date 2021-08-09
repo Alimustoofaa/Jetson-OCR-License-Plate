@@ -6,7 +6,7 @@ class ConfigOcr(BaseModel):
 	decoder:        Optional[str]   = 'greedy'
 	beam_width:     Optional[int]   = 5
 	batch_size:     Optional[int]   = 1
-	workers:        Optional[int]   = 0
+	workers:        Optional[int]   = 4
 	allow_list:     Optional[str]   = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 	blocklist:      Optional[str]   = ''
 	detail:         Optional[int]   = 1
