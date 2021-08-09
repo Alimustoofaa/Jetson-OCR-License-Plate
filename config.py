@@ -44,26 +44,17 @@ DETECTION_MODEL = {
     'file_size' : 14753191
 }
 
-WORD_FOR_REPLACE = {
-    # Number to text
-    '0' : 'U',
-	'6' : 'G',
-	'O' : '0',
-	# Text to number
-	'F' : '0',
-	'H' : '0',
-    'M' : '0',
-    'A' : '4',
-    'D' : '0',
-    'B' : '8',
-	'E' : '0',
-    'R' : '3',
-    'S' : '3',
-	# Number to number
-	'1' : '4'
+REPLACE_NUMBER2ABJAD_DICT = {
+    '5': 'S',
+    '0': 'O'
 }
 
-__file_kd_wilayah = open(os.path.join(os.getcwd(),'../kode_wilayah.json'))
+REPLACE_ABJAD2NUMBER_DICT = {
+    'A': '4',
+    'O': '0'
+}
+
+__file_kd_wilayah = open(os.path.join(os.getcwd(),'kode_wilayah.json'))
 KODE_WILAYAH_JSON = json.loads(__file_kd_wilayah.read())
 KODE_WILAYAH_LIST = [i for i in KODE_WILAYAH_JSON.keys()]
 
