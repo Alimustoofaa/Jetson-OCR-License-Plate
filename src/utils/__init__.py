@@ -4,3 +4,4 @@ from .process_license_plate import detect_char
 from .process_license_plate import detection_object
 
 from .logger import logging
+from .arducam import ArducamUtils
