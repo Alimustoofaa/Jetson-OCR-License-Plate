@@ -36,12 +36,34 @@ ADAM_CONFIG = {
 
 PORT = 8004
 
-CLASESS = ['license_plate']
+
+CLASESS_MODEL_YOLOV5 = [
+    'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
+    'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
+    'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
+    'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
+    'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
+    'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
+    'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
+    'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
+    'hair drier', 'toothbrush'
+]
+
+VEHICLE_CLASESS = ['car', 'bus', 'truck']
+
+CLASESS_MODEL_LICENSE_PLATE = ['license_plate']
 
 DETECTION_MODEL = {
-    'filename': 'model_license_plate_iso_code.pt',
-    'url' : 'https://github.com/Alimustoofaa/1-PlateDetection/releases/download/model_yolov5/license_plat_indonesia_best.pt',
-    'file_size' : 14753191
+    'license_plate' : {
+        'filename': 'model_license_plate_iso_code.pt',
+        'url' : 'https://github.com/Alimustoofaa/1-PlateDetection/releases/download/model_yolov5/license_plat_indonesia_best.pt',
+        'file_size' : 14753191
+    },
+    'yolov5s': {
+        'filename': 'model_yolov5s.pt',
+        'url' : 'https://github.com/Alimustoofaa/1-PlateDetection/releases/download/model_yolov5/yolov5s.pt',
+        'file_size' : 14796495
+    }
 }
 
 REPLACE_NUMBER2ABJAD_DICT = {
