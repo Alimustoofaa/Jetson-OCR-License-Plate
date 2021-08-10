@@ -11,7 +11,7 @@ import numpy as np
 from tqdm import tqdm
 from pathlib import Path
 
-from config import DIRECTORY_MODEL, DETECTION_MODEL, CLASESS
+from config import DIRECTORY_MODEL, DETECTION_MODEL, CLASESS_MODEL_LICENSE_PLATE
 
 class LicensePlateDetection:
     '''
@@ -19,7 +19,7 @@ class LicensePlateDetection:
     in directory model/model_license_plate.pt
     '''
     def __init__(self):
-        self.model_path = os.path.join(DIRECTORY_MODEL, DETECTION_MODEL['filename'])
+        self.model_path = os.path.join(DIRECTORY_MODEL, DETECTION_MODEL['license_plate']['filename'])
         self.check_model()
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.model = torch.hub.load('ultralytics/yolov5', 'custom', path_or_model=self.model_path)
@@ -33,18 +33,18 @@ class LicensePlateDetection:
         Path(DIRECTORY_MODEL).mkdir(parents=True, exist_ok=True)
         if not os.path.isfile(self.model_path):
             print('Downloading license plate detection model, please wait.')
-            response = requests.get(DETECTION_MODEL['url'], stream=True)
+            response = requests.get(DETECTION_MODEL['license_plate']['url'], stream=True)
             progress = tqdm(response.iter_content(1024), 
-                        f'Downloading {DETECTION_MODEL["filename"]}', 
-                        total=DETECTION_MODEL['file_size'], unit='B', 
+                        f'Downloading {DETECTION_MODEL["license_plate"]["filename"]}', 
+                        total=DETECTION_MODEL['license_plate']['file_size'], unit='B', 
                         unit_scale=True, unit_divisor=1024)
             with open(self.model_path, 'wb') as f:
                 for data in progress:
                     f.write(data)
                     progress.update(len(data))
-                print(f'Done downloaded {DETECTION_MODEL["filename"]} detection model.')
+                print(f'Done downloaded {DETECTION_MODEL["license_plate"]["filename"]} detection model.')
         else:
-            print(f'Load {DETECTION_MODEL["filename"]} detection model.')
+            print(f'Load {DETECTION_MODEL["license_plate"]["filename"]} detection model.')
 
     def filter_and_crop(self, img, results, min_confidence=0.0):
         '''
@@ -68,7 +68,7 @@ class LicensePlateDetection:
 
         if len(results_format[0]) >= 1:
             for i in range(len(results_format[0])):
-                classes_name = CLASESS[int(results_format[0][i][-1])]
+                classes_name = CLASESS_MODEL_LICENSE_PLATE[int(results_format[0][i][-1])]
                 confidence = float(results_format[0][i][-2])
                 if classes_name == 'license_plate' and confidence >= min_confidence:
                     if confidence > max_conf_license_plate:
