@@ -4,9 +4,11 @@ from .logger import logging
 from src.schema.config_ocr import ConfigOcr
 from src.app import LicensePlateDetection
 from src.app import OpticalCharacterRecognition
+from src.app import VehicleClassification
 
-model   = LicensePlateDetection()
-ocr     = OpticalCharacterRecognition()
+classification  = VehicleClassification()
+model           = LicensePlateDetection()
+ocr             = OpticalCharacterRecognition()
 
 def detection_object(image):
     '''
@@ -31,6 +33,28 @@ def detection_object(image):
     else: logging.info(f'License plate not found')
     return license_plate
 
+def classification_vehicle(image):
+    '''
+    Classification vehicle
+    and filter clasess, confidence
+    Args:
+        image(np.array): image for classification
+    Return:
+        result(tuple): (
+            clasess(str): clases name
+            confidence(float): confidence level
+            bbox(list): bbox object [x_min, y_min, x_max, y_max]
+        )
+    '''
+    result_classification = classification.prediction(image)
+    vehicle_type = classification.filter_and_crop(
+        results=result_classification, min_confidence=0.0
+    )
+    if vehicle_type[0] and vehicle_type[1] and vehicle_type[2]:
+        logging.info(f'Got classification {vehicle_type[2]} confidence : {round(vehicle_type[0], 2)*100} %')
+    else: logging.info(f'Not found object classification')
+    return vehicle_type
+    
 def resize(image, height_percent=180, width_percent=180):
 	'''
 	resize image by percent
