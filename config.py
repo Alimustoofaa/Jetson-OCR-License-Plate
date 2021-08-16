@@ -70,13 +70,16 @@ DETECTION_MODEL = {
 }
 
 REPLACE_NUMBER2ABJAD_DICT = {
+    '7': 'T',
+    '8': 'B',
     '5': 'S',
     '0': 'O'
 }
 
 REPLACE_ABJAD2NUMBER_DICT = {
     'A': '4',
-    'O': '0'
+    'O': '0',
+    'T': '7'
 }
 
 __file_kd_wilayah = open(os.path.join(os.getcwd(),'kode_wilayah.json'))
