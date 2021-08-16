@@ -4,7 +4,7 @@ import json
 # Config
 ROOT = os.path.normpath(os.path.dirname(__file__))
 
-DIRECTORY_MODEL         = os.path.join(ROOT,'src/models')
+DIRECTORY_MODEL         = os.path.expanduser("~/.Halotec-Lpn/Model")
 
 DIRECTORY_SAVE_CAPTURE  = os.path.join(ROOT, 'captures')
 
