@@ -21,7 +21,7 @@ def __process_license_plate(image, image_detection, bbox):
 	
 	if bbox and len(image_detection) >= 1:
 		# Resize image if width < 150
-		image_crop = resize(image_detection, 300, 310) if image_detection.shape[1] < 150 else image_detection
+		image_crop = resize(image_detection, 250, 255) if image_detection.shape[1] < 150 else image_detection
 		# Detection character in image
 		detected_char = detect_char(image_crop, output=False)
 		# Handle image if detected char not found
