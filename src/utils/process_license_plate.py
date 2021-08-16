@@ -109,8 +109,8 @@ def read_text(image, position_text='horizontal', clasess_name='license_plate'):
 		config = ConfigOcr(
 			beam_width      = 8,
 			batch_size      = 10,
-			text_threshold  = 0.5,
-			link_threshold  = 0.9,
+			text_threshold  = 0.4,
+			link_threshold  = 0.7,
 			low_text        = 0.4,
 			slope_ths       = 0.9,
 			mag_ratio 		= 1,
