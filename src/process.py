@@ -18,9 +18,10 @@ def __process_license_plate(image, image_detection, bbox):
 		text_license_plate(str): result license plate
 		conf_license_plate(float): confidence level ocr
 	'''
-	if bbox:
+	
+	if bbox and len(image_detection) >= 1:
 		# Resize image if width < 150
-		image_crop = resize(image_detection.copy(), 300, 310) if image_detection.shape[1] < 150 else image_detection
+		image_crop = resize(image_detection, 300, 310) if image_detection.shape[1] < 150 else image_detection
 		# Detection character in image
 		detected_char = detect_char(image_crop, output=False)
 		# Handle image if detected char not found
@@ -32,14 +33,19 @@ def __process_license_plate(image, image_detection, bbox):
 	# Extract results ocr 
 	text_processing = LicensePlateExtract(results_ocr)
 	license_plate_dict = text_processing.license_plate_dict
-	text_license_plate = (f"{license_plate_dict['area_code'][0]} "
-						f"{license_plate_dict['license_number'][0]} "
-						f"{license_plate_dict['unique_are'][0]}")
+	print(license_plate_dict)
+	try:
+		text_license_plate = (f"{license_plate_dict['area_code'][0]} "
+							f"{license_plate_dict['license_number'][0]} "
+							f"{license_plate_dict['unique_are'][0]}")
 
-	conf_license_plate = round((license_plate_dict['area_code'][1]+
-								license_plate_dict['license_number'][1]+
-								license_plate_dict['unique_are'][1]
-						)/len(license_plate_dict), 2)
+		conf_license_plate = round((license_plate_dict['area_code'][1]+
+									license_plate_dict['license_number'][1]+
+									license_plate_dict['unique_are'][1]
+							)/len(license_plate_dict), 2)
+	except:
+		text_license_plate = ' '.join([i for i,_ in license_plate_dict.values()])
+		conf_license_plate = round(sum([i for _,i in license_plate_dict.values()])/len(license_plate_dict), 2)
 
 	logging.info(f'License Plate : {text_license_plate}')
 	logging.info(f'Confidence : {conf_license_plate*100} %')
