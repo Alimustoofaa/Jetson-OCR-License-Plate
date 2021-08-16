@@ -40,6 +40,19 @@ class LicensePlateExtract:
             for word in remove_space:
                 if word.isalnum():
                     new_text_conf.append([word, conf])
+                    
+        new_text_conf_2 = list()
+        if len(new_text_conf) <= 2:
+            for text, conf in new_text_conf:
+                if not text[0].isnumeric() and text[1:].isnumeric() and len(text)>4: # Pattren B3356 K0
+                    new_text_conf_2.append([text[0], conf])
+                    new_text_conf_2.append([text[1:], conf])
+                elif text[:4].isnumeric() and text[4:].isalpha():
+                    new_text_conf_2.append([text[:4], conf])
+                    new_text_conf_2.append([text[4:], conf])
+                else: new_text_conf_2.append([text, conf])
+
+            return new_text_conf_2
         return new_text_conf
 
     def __replace_abjad2number(self, text, conf):
