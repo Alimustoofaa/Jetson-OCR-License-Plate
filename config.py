@@ -3,7 +3,10 @@ import json
 
 # Config
 ROOT = os.path.normpath(os.path.dirname(__file__))
-DIRECTORY_MODEL = 'src/models'
+
+DIRECTORY_MODEL         = os.path.join(ROOT,'src/models')
+
+DIRECTORY_SAVE_CAPTURE  = os.path.join(ROOT, 'captures')
 
 CAMERA_URL = {
     'url' : [
@@ -97,5 +100,5 @@ low_latency_mode 0x009a206d (bool)   		: default=0 value=0
 preferred_stride 0x009a206e (int)    		: min=0 max=65535 step=1 default=0 value=0
 sensor_modes 0x009a2082 (int)    			: min=0 max=30 step=1 default=30 value=5 flags=read-only
 '''
-
-COMMAND_CAMERA_PROPERTY = 'v4l2-ctl -d 0 --set-ctrl vertical_flip=1 -c exposure=50000 -c saturation=5000'
+# v4l2-ctl -d 0 --set-ctrl vertical_flip=1 -c exposure=50000 -c saturation=5000
+COMMAND_CAMERA_PROPERTY = 'v4l2-ctl -d 0 -c exposure=500000  -c saturation=5500'
