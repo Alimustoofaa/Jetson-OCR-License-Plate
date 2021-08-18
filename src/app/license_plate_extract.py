@@ -138,7 +138,7 @@ class LicensePlateExtract:
 		'''
 		Get license plate number
 		'''
-		index = [i for i,x in enumerate(self.text_list) if len(x) == 4 and x.isnumeric()]
+		index = [i for i,x in enumerate(self.text_list) if len(x) == 4 and x.isnumeric() and not x[0] in ['0', 'O']]
 		if index:
 			for idx in index:
 				self.license_plate_dict.update({'license_number': [self.text_list[idx], self.conf_list[idx]]})
@@ -152,7 +152,7 @@ class LicensePlateExtract:
 		and update confidence (conf+1)/2
 		'''
 		for text, conf in self.filtered_text:
-			if len(text) in range(2, 5) and not text.isalpha() and text[0] != '0':
+			if len(text) in range(2, 5) and not text.isalpha() and not text[0] in ['0', 'O']:
 				if text.isnumeric():
 					self.license_plate_dict.update({'license_number': [text, conf]})
 					break
@@ -160,7 +160,15 @@ class LicensePlateExtract:
 					text, conf = self.__replace_abjad2number(text, conf)
 					self.license_plate_dict.update({'license_number': [text, conf]})
 					break
-			else: self.license_plate_dict.update({'license_number': ['', 0]})
+		try:
+			self.license_plate_dict.update['license_number']
+		except:
+			for idx, (text, conf) in enumerate(self.filtered_text):
+				if text.isalnum() and not text.isnumeric() and len(text) > 4 and text[0].isnumeric(): # Pattren B 3356K0
+					search_num = [char for char in text if char.isdigit()]
+					self.license_plate_dict.update({'license_number': [text[:len(search_num)], conf]})
+					self.filtered_text[idx] = [text[len(search_num):], conf]
+					break
 	
 	def get_unique_area(self):
 		'''
@@ -189,4 +197,7 @@ class LicensePlateExtract:
 					text, conf = self.__replace_number2abjad(text, conf)
 					text = text[:3] if len(text) >3 else text
 					self.license_plate_dict.update({'unique_are': [text, conf]})
-			else: self.license_plate_dict.update({'unique_are': ['', 0]})
+					break
+		
+		try: self.license_plate_dict['unique_are']
+		except: self.license_plate_dict.update({'unique_are': ['', 0]})
