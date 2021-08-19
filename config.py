@@ -73,7 +73,8 @@ REPLACE_NUMBER2ABJAD_DICT = {
     '7': 'T',
     '8': 'B',
     '5': 'S',
-    '0': 'O'
+    '0': 'O',
+    '4': 'C'
 }
 
 REPLACE_ABJAD2NUMBER_DICT = {
