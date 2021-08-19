@@ -4,6 +4,8 @@ from .process_license_plate import detect_char
 from .process_license_plate import detection_object
 from .process_license_plate import classification_vehicle
 
+from .draw_rectangle import draw_rectangle
+
 from .logger import logging
 from. logger import datetime_format
 from .save_capture import save_capture
