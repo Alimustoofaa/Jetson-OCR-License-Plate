@@ -1,4 +1,5 @@
 import cv2
+import easyocr
 
 from .logger import logging
 from src.schema.config_ocr import ConfigOcr
@@ -68,7 +69,8 @@ def resize(image, height_percent=180, width_percent=180):
 	height = int(image.shape[0] * height_percent / 100)
 	width = int(image.shape[1] * width_percent / 100)
 	dim = (width, height)
-	new_img = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
+	try: new_img = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
+	except cv2.error: new_img = image
 	logging.info(f'Resize image to : {new_img.shape}')
 	return new_img
 
@@ -81,7 +83,8 @@ def detect_char(image, output=False):
 	Return:
 		result(boolean|list): result detection character
 	'''
-	detected_char = ocr.detect_char(image)
+	try: detected_char = ocr.detect_char(image)
+	except: detected_char = [[],[]]
 	if detected_char[0]:
 		logging.info(f'Found text in image : {" ".join([str(i) for i in detected_char[0]])}')
 	else:
@@ -115,7 +118,7 @@ def read_text(image, position_text='horizontal', clasess_name='license_plate'):
 			slope_ths       = 0.9,
 			mag_ratio 		= 1,
 			add_margin		= 0.5,
-			width_ths       = 0.5
+			width_ths       = 0.2
 		)
 	elif position_text == 'vertical':
 		config = ConfigOcr(
@@ -125,7 +128,6 @@ def read_text(image, position_text='horizontal', clasess_name='license_plate'):
 			low_text 		= 0.4,
 			add_margin		= 0
 		)
-
 	results = ocr.ocr_image(image=image, config=config)
 	if position_text == 'horizontal': results.sort(reverse=False)
 	else : results = results
