@@ -12,7 +12,7 @@ def draw_rectangle(image, bbox_dict, encoded=False):
 		drawed_image(any): image drawed retrun str if decoded else np.array 
 	'''
 	for name in bbox_dict:
-		if bbox_dict[name]:
+		if bbox_dict[name][1]:
 			if name == 'vehicle_type':
 				color_reactangle = (0, 204, 0) # Green
 			elif name == 'license_plate':
