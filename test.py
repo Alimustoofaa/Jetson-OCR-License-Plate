@@ -21,6 +21,13 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(TRIGGER_PIN, GPIO.IN)
 
 def process_license_plate():
+	'''
+	Processing ocr plate and vehicle classification
+	-> Get directory all image*.jpg saved in DIRECTORY_SAVE_CAPTURE
+	-> read image in DIRECTORY_SAVE_CAPTURE
+	-> Processing in function main_ocr_license_plate(image)
+	-> Delete image if processing success
+	'''
 	while True:
 		path_image_list = [i for i in glob.glob(f'{DIRECTORY_SAVE_CAPTURE}/*.jpg')]
 		if path_image_list:
@@ -36,7 +43,9 @@ def process_license_plate():
 		time.sleep(1)
 
 def capture_image():
-	# open camera
+	'''
+	Run camera arducam and save image with GPIO trigger
+	'''
 	try:
 		camera          = cv2.VideoCapture(0, cv2.CAP_V4L2)
 		arducam_conf    = ArducamConfig(0)
