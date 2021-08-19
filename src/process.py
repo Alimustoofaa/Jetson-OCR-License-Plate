@@ -4,8 +4,9 @@ import numpy as np
 
 from .utils import logging
 from .app import LicensePlateExtract
+from .schema import ResultProcess
 from .utils import (detection_object, classification_vehicle, 
-					resize, detect_char, read_text)
+					resize, detect_char, read_text, draw_rectangle)
 
 def __process_license_plate(image, image_detection, bbox):
 	'''
@@ -64,7 +65,7 @@ def main_ocr_license_plate(image):
 	'''
 	start_time = time.time()
 	# Clasification vehicle
-	try: _,_, vehicle_type = classification_vehicle(image)
+	try: confidence_vehicle ,bbox_vehicle, vehicle_type = classification_vehicle(image)
 	except: vehicle_type = ''
 
 	# Detection object
@@ -78,12 +79,35 @@ def main_ocr_license_plate(image):
 		image_license_plate, bbox_license_plate = license_plate[0], license_plate[2]
 	else:
 		# Get manual crop container characteristic with detect char and filter bbox character\
-		image_license_plate, bbox_license_plate = image, None
+		image_license_plate, bbox_license_plate = image, list()
 	text_license_plate, conf_license_plate = __process_license_plate(
 		image, image_license_plate, bbox_license_plate
 	)
-	
+	# Draw bbox rectangle
+	image_encoded = draw_rectangle(
+		image,
+		{
+			'license_plate': ['plate',bbox_license_plate], 
+			'vehicle_type': [vehicle_type, bbox_vehicle]
+		}, 
+		encoded=True
+	)
+ 
 	end_time = round((time.time() - start_time),2)
 	logging.info(f'Time Processing : {end_time} s')
-	result = (vehicle_type, text_license_plate, conf_license_plate, end_time)
-	return result
+	# result = (vehicle_type, text_license_plate, conf_license_plate, end_time)
+	result = ResultProcess(
+		vehicle_classification = {
+			'bbox': bbox_vehicle,
+			'confidence': confidence_vehicle,
+			'clases': vehicle_type
+		},
+		license_plate = {
+			'bbox': bbox_license_plate,
+			'result_ocr': text_license_plate,
+			'confidence': conf_license_plate
+		},
+		processing_time = end_time,
+		image = image_encoded
+	)
+	return result.dict()
