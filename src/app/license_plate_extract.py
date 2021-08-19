@@ -166,8 +166,12 @@ class LicensePlateExtract:
 			for idx, (text, conf) in enumerate(self.filtered_text):
 				if text.isalnum() and not text.isnumeric() and len(text) > 4 and text[0].isnumeric(): # Pattren B 3356K0
 					search_num = [char for char in text if char.isdigit()]
-					self.license_plate_dict.update({'license_number': [text[:len(search_num)], conf]})
-					self.filtered_text[idx] = [text[len(search_num):], conf]
+					if len(search_num) <= 4:
+						self.license_plate_dict.update({'license_number': [text[:len(search_num)], conf]})
+						self.filtered_text[idx] = [text[len(search_num):], conf]
+					else:
+						self.license_plate_dict.update({'license_number': [text[:4], conf]})
+						self.filtered_text[idx] = [text[4:], conf]
 					break
 	
 	def get_unique_area(self):
