@@ -2,7 +2,7 @@ import cv2
 import easyocr
 
 from .logger import logging
-from src.schema.config_ocr import ConfigOcr
+from src.schema import ConfigOcr
 from src.app import LicensePlateDetection
 from src.app import OpticalCharacterRecognition
 from src.app import VehicleClassification
