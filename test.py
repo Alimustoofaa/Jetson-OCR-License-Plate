@@ -8,7 +8,6 @@ import Jetson.GPIO as GPIO
 from threading import Thread
 from src.utils import logging
 
-from config import TRIGGER_PIN
 from config import DIRECTORY_SAVE_CAPTURE
 from config import COMMAND_CAMERA_PROPERTY
 from src.utils import ArducamConfig, save_capture
