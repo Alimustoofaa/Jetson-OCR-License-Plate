@@ -68,7 +68,14 @@ def capture_image():
 			if not ret: print('Error Camera Module'); sys.exit(1)
 				
 			# GPIO wait input
+			# if GPIO.input(TRIGGER_PIN):
+			# 	print('Capture image')
+			# 	frame = arducam_conf.convert(frame=frame)
+			# 	save_capture(frame)
+			# else: continue
+
 			GPIO.wait_for_edge(TRIGGER_PIN, GPIO.FALLING)
+			print('Capture image')
 			frame = arducam_conf.convert(frame=frame)
 			save_capture(frame)
 			
