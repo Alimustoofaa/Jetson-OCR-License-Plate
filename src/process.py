@@ -1,12 +1,18 @@
+import glob
 import cv2
+import sys
 import time
+import subprocess
 import numpy as np
+
+from config import COMMAND_CAMERA_PROPERTY
 
 from .utils import logging
 from .app import LicensePlateExtract
 from .schema import ResultProcess
 from .utils import (detection_object, classification_vehicle, 
-					resize, detect_char, read_text, draw_rectangle)
+					resize, detect_char, read_text, draw_rectangle,
+					ArducamConfig, save_capture)
 
 def __process_license_plate(image, image_detection, bbox):
 	'''
@@ -111,3 +117,55 @@ def main_ocr_license_plate(image):
 		image = image_encoded
 	)
 	return result.dict()
+
+
+frame_image_encoded = np.array([])
+
+def vehicle_detection_and_counting():
+	'''
+	Procesing live detection vehicle in camera video
+	-> Run Camera
+	-> Classification Vehicle
+	-> Processing bbox
+	-> Vehicle Counting
+
+	'''
+	global frame_image_encoded
+
+	try:
+		camera          = cv2.VideoCapture(0, cv2.CAP_V4L2)
+		arducam_conf    = ArducamConfig(0)
+	except:
+		print('Error Camera Module')
+		sys.exit(1)
+
+	camera.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('U', 'Y', 'V', 'Y'))
+	camera.set(cv2.CAP_PROP_CONVERT_RGB, arducam_conf.convert2rgb)
+	camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+	camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+
+	# Run shell v4l2-ctl, worked with 7 loop
+	for _ in range(7):
+		subprocess.call([COMMAND_CAMERA_PROPERTY], shell=True)
+		ret, frame = camera.read()
+
+	while True:
+		ret, frame = camera.read()
+		if not ret: print('Error Camera Module'); sys.exit(1)
+
+		# Vehicle Detection
+		image = frame.copy()
+		try: confidence_vehicle ,bbox_vehicle, vehicle_type = classification_vehicle(image)
+		except: confidence_vehicle, vehicle_type, bbox_vehicle = 0,'', [0,0,0,0] 
+
+		if confidence_vehicle and len(bbox_vehicle)>1 and len(vehicle_type)>2:
+			# save_capture(image)
+			# Calculate Centroid
+			x, y = int((bbox_vehicle[0] + bbox_vehicle[2])/2), int((bbox_vehicle[1] + bbox_vehicle[3])/2)
+		image_encoded = draw_rectangle(
+			frame,
+			{'vehicle_type': [vehicle_type, bbox_vehicle]}, 
+			encoded=True
+		)
+		frame_image_encoded = image_encoded
+		# print(frame_image_encoded)
