@@ -1,6 +1,6 @@
 import os
 import json
-
+import numpy as np
 # Config
 ROOT = os.path.normpath(os.path.dirname(__file__))
 
@@ -39,6 +39,11 @@ ADAM_CONFIG = {
 
 PORT = 8004
 
+A = (750, 800)
+B = (1370,850)
+C = (1480,780)
+D = (1000, 760)
+AREA_DETECTION = np.array([A, B, C, D], np.int32)
 
 CLASESS_MODEL_YOLOV5 = [
     'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
