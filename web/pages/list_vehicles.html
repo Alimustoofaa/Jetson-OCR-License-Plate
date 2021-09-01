@@ -1,0 +1,83 @@
+{% set active_page = "list_vehicles" %}
+{% include 'components/header.html' %}
+{% include 'components/mobile-menu.html' %}
+{% include 'components/side-menu.html' %}
+{% include 'components/top-bar.html' %}
+
+
+<div class="intro-y datatable-wrapper box p-5 mt-5">
+    <table class="table table-report table-report--bordered display datatable w-full">
+        <thead>
+            <tr>
+                <th class="border-b-2 text-center whitespace-no-wrap">NO</th>
+                <th class="border-b-2 text-center whitespace-no-wrap">TIME</th>
+                <th class="border-b-2 text-center whitespace-no-wrap">LICENSE PLATE</th>
+                <th class="border-b-2 text-center whitespace-no-wrap">VEHICLE TYPE</th>
+                <!-- <th class="border-b-2 text-center whitespace-no-wrap">IMAGES</th> -->
+                <th class="border-b-2 text-center whitespace-no-wrap">IMAGE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <script>
+                url_segs = window.location.pathname.split("/");
+                var enpoint_url = url_segs[1]
+                var results
+                if (window.location.protocol == "https:") {
+                    var ws_scheme = "wss://";
+                } else {
+                    var ws_scheme = "ws://"
+                };
+                var options_datetime = {hour: '2-digit', minute: '2-digit', hour12:false, day: 'numeric', year: 'numeric', month: 'numeric'};
+                var ws = new WebSocket(ws_scheme + location.host + "/ws/" + enpoint_url);
+                console.log(ws);
+                ws.onmessage = function(event) {
+                    $('tbody').empty();
+                    results = JSON.parse(event.data)['results'];
+                    console.log(results);
+                    for (let [index, result] of results.entries()) {
+                        console.log(result);
+                        tr = $('<tr>');
+                        tr.append(`<td class="text-center border-b">
+                                    <div class="font-normal whitespace-no-wrap">
+                                        ${index+1}
+                                    </div>
+                                </td>`);
+                        tr.append(`<td class="text-center border-b">
+                                    <div class="font-normal whitespace-no-wrap">
+                                        ${new Date(result.timestamp).toLocaleTimeString('id-ID', options_datetime)}
+                                    </div>
+                                </td>`);
+                        tr.append(`<td class="text-center border-b">
+                                    <div class="font-normal whitespace-no-wrap">
+                                        ${result.license_plate}
+                                        <span class="text-xs px-1 bg-theme-1 text-white mr-1">
+                                            ${result.conf_license_plate*100}%
+                                        </span>
+                                    </div>
+                                </td>`);
+                        tr.append(`<td class="text-center border-b">
+                                    <div class="font-normal whitespace-no-wrap">
+                                        ${result.vehicle_type.toUpperCase()}
+                                        <span class="text-xs px-1 bg-theme-6 text-white mr-1">
+                                            ${result.conf_vehicle_type*100}%
+                                        </span>
+                                    </div>
+                                </td>`);
+                        tr.append(`<td class="text-center border-b">
+                                    <div class="flex sm:justify-center">
+                                        <a  href="../dist/results_ocr/${result.image_filename}" target="_blank">
+                                            <div class="w-10 h-10 image-fit zoom-in -ml-5">
+                                                <img alt="Image ${result.image_filename}" class="tooltip rounded-full" src="{{ url_for('dist', path='/results_ocr/${result.image_filename}') }}">
+                                            </div>
+                                        </a>
+                                    </div>
+                                </td>`)
+                        $('tbody').append(tr);
+                    };
+                };
+            </script>
+        </tbody>
+    </table>
+</div>
+
+{% include 'components/footer.html' %}

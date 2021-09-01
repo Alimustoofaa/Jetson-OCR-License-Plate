@@ -1,0 +1,30 @@
+<div class="flex">
+    <!-- BEGIN: Side Menu -->
+    <nav class="side-nav">
+        <a href="" class="intro-x flex items-center pl-5 pt-4">
+            <img alt="Midone Tailwind HTML Admin Template" class="w-10" src="{{ url_for('dist', path='/images/jasamarga-logo.png') }}">
+            <span class="hidden xl:block text-white text-lg ml-3"> <span class="font-medium">JASAMARGA </span> </span>
+        </a>
+        <div class="side-nav__devider my-6"></div>
+        <ul>
+            <li>
+                <a href="index.html" class="side-menu side-menu">
+                    <div class="side-menu__icon"> <i data-feather="home"></i> </div>
+                    <div class="side-menu__title"> Dashboard </div>
+                </a>
+            </li>
+            <li>
+                <a id="vehicles_list" href="../list_vehicles" class="side-menu {{'side-menu--active' if active_page == 'list_vehicles' else ''}} ">
+                    <div class="side-menu__icon"> <i data-feather="truck"></i> </div>
+                    <div class="side-menu__title"> List Vehicles </div>
+                </a>
+            </li>
+            <li>
+                <a id="streaming" href="../streaming" class="side-menu {{'side-menu--active' if active_page == 'streaming' else ''}} ">
+                    <div class="side-menu__icon"> <i data-feather="video"></i> </div>
+                    <div class="side-menu__title"> Live Camera</div>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!-- END: Side Menu -->

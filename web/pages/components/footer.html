@@ -1,0 +1,27 @@
+
+<!-- BEGIN: Delete Confirmation Modal -->
+<div class="modal" id="delete-confirmation-modal">
+    <div class="modal__content">
+        <div class="p-5 text-center">
+            <i data-feather="x-circle" class="w-16 h-16 text-theme-6 mx-auto mt-3"></i> 
+            <div class="text-3xl mt-5">Are you sure?</div>
+            <div class="text-gray-600 mt-2">Do you really want to delete these records? This process cannot be undone.</div>
+        </div>
+        <div class="px-5 pb-8 text-center">
+            <button type="button" data-dismiss="modal" class="button w-24 border text-gray-700 mr-1">Cancel</button>
+            <button type="button" class="button w-24 bg-theme-6 text-white">Delete</button>
+        </div>
+    </div>
+</div>
+<!-- END: Delete Confirmation Modal -->
+        </div>
+        <!-- END: Content -->
+    </div>
+<!-- BEGIN: JS Assets-->
+<!-- <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script> -->
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=["your-google-map-api"]&libraries=places"></script> -->
+<!-- <script src="dist/js/app.js"></script> -->
+<script src="{{ url_for('dist', path='/js/app.js') }}"></script>
+<!-- END: JS Assets-->
+</body>
+</html>
