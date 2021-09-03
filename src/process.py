@@ -1,4 +1,5 @@
 import glob
+from os import name
 import cv2
 import sys
 import time
@@ -13,7 +14,6 @@ from .schema import ResultProcess
 from .utils import (detection_object, classification_vehicle, 
 					resize, detect_char, read_text, draw_rectangle,
 					ArducamConfig, save_capture)
-
 def __process_license_plate(image, image_detection, bbox):
 	'''
 	Preprocess and process ocr license plate indonesia
@@ -132,40 +132,52 @@ def vehicle_detection_and_counting():
 	'''
 	global frame_image_encoded
 
+	PREDICTION_BORDER_Y, PREDICTION_BORDER_X= 360, 60
+
 	try:
-		camera          = cv2.VideoCapture(0, cv2.CAP_V4L2)
-		arducam_conf    = ArducamConfig(0)
+		camera = cv2.VideoCapture("filesrc location=/home/ocr/Halotec/Jetson-OCR-License-Plate/captures/2.mp4 ! qtdemux ! h264parse ! omxh264dec ! nvvidconv ! video/x-raw, format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink", cv2.CAP_GSTREAMER)
+		# arducam_conf    = ArducamConfig(0)
 	except:
 		print('Error Camera Module')
 		sys.exit(1)
 
-	camera.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('U', 'Y', 'V', 'Y'))
-	camera.set(cv2.CAP_PROP_CONVERT_RGB, arducam_conf.convert2rgb)
-	camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-	camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+	# camera.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('U', 'Y', 'V', 'Y'))
+	# camera.set(cv2.CAP_PROP_CONVERT_RGB, arducam_conf.convert2rgb)
+	# camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+	# camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
-	# Run shell v4l2-ctl, worked with 7 loop
-	for _ in range(7):
-		subprocess.call([COMMAND_CAMERA_PROPERTY], shell=True)
-		ret, frame = camera.read()
+	# # Run shell v4l2-ctl, worked with 7 loop
+	# for _ in range(7):
+	# 	subprocess.call([COMMAND_CAMERA_PROPERTY], shell=True)
+	# 	ret, frame = camera.read()
 
 	while True:
 		ret, frame = camera.read()
-		if not ret: print('Error Camera Module'); sys.exit(1)
+		if ret: #print('Error Camera Module'); sys.exit(1)
+			image = frame.copy()
+			# Draw line
+			cv2.line(frame, (60,PREDICTION_BORDER_Y), (340, PREDICTION_BORDER_Y), (255, 0, 0), 2)
 
-		# Vehicle Detection
-		image = frame.copy()
-		try: confidence_vehicle ,bbox_vehicle, vehicle_type = classification_vehicle(image)
-		except: confidence_vehicle, vehicle_type, bbox_vehicle = 0,'', [0,0,0,0] 
+			# Vehicle Detection
+			try: confidence_vehicle ,bbox_vehicle, vehicle_type = classification_vehicle(image, log=False)
+			except: confidence_vehicle, vehicle_type, bbox_vehicle = 0,'', [0,0,0,0] 
 
-		if confidence_vehicle and len(bbox_vehicle)>1 and len(vehicle_type)>2:
-			# save_capture(image)
-			# Calculate Centroid
-			x, y = int((bbox_vehicle[0] + bbox_vehicle[2])/2), int((bbox_vehicle[1] + bbox_vehicle[3])/2)
-		image_encoded = draw_rectangle(
-			frame,
-			{'vehicle_type': [vehicle_type, bbox_vehicle]}, 
-			encoded=True
-		)
-		frame_image_encoded = image_encoded
+			if confidence_vehicle and len(bbox_vehicle)>1 and len(vehicle_type)>2:
+				# Calculate Centroid
+				x, y = int((bbox_vehicle[0] + bbox_vehicle[2])/2), int((bbox_vehicle[1] + bbox_vehicle[3])/2)
+				cv2.circle(frame, (x, y), 3, (0, 255, 0), -1)
+
+				# Process counting
+				if x > PREDICTION_BORDER_X and y in range(PREDICTION_BORDER_Y, PREDICTION_BORDER_Y+5):
+					cv2.line(frame, (60,PREDICTION_BORDER_Y), (340, PREDICTION_BORDER_Y), (0, 0, 255), 2)
+					save_capture(image, name=f'{vehicle_type}_{round(confidence_vehicle, 2)}')
+					# save_db(bbox_vehicle, confidence_vehicle, vehicle_type)
+			# Draw ractangle image
+			image_encoded = draw_rectangle(
+				frame,
+				{'vehicle_type': [vehicle_type, bbox_vehicle]}, 
+				encoded=True
+			)
+			frame_image_encoded = image_encoded
+		else:  continue
 		# print(frame_image_encoded)
