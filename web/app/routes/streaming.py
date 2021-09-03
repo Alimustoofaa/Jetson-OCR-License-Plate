@@ -15,6 +15,10 @@ from ..config import engine, get_session_db
 from ..schemas import Vehicle
 from ..utils import get_token_header, socket
 
+import os
+import glob
+from config import DIRECTORY_SAVE_CAPTURE
+
 from src import process
 router = APIRouter()
 
@@ -41,9 +45,24 @@ async def get_frame_socket(
 	
 	try:
 		while True:
+			results_dict_list = list()
+
+			path_image_list = [i for i in sorted(glob.glob(f'{DIRECTORY_SAVE_CAPTURE}/*.jpg'), key=os.path.getatime)]
+			for i in path_image_list:
+				filename = i.split('/')[-1]
+				filename_list = filename.split('_')
+				vehicle_type = filename_list[0]
+				confidence = filename_list[1]
+				image_name = filename.split('.jpg')[0]
+				results_dict_list.append({
+					'vehicle_type':vehicle_type,
+					'conf_vehicle_type': confidence,
+					'image_filename': image_name
+				})
 			await websocket.send_json({'results': {
-				'image_streaming': str(process.frame_image_encoded)
+				'image_streaming': str(process.frame_image_encoded),
+				'results_counting': results_dict_list
 			}})
-			await asyncio.sleep(0.5)
+			await asyncio.sleep(0.1)
 	except:
 		await websocket.close()
