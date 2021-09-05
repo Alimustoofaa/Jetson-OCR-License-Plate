@@ -10,7 +10,6 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -135,16 +134,11 @@ dmypy.json
 .pytype/
 
 # Cython debug symbols
-cython_debug/
-
-# models
-models/
 
 *.jpg
 
 logger/
 
 test-img/
-img/
 
 .vscode     
