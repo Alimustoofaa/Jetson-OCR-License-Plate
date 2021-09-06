@@ -61,6 +61,8 @@ VEHICLE_CLASESS = ['car', 'bus', 'truck']
 
 CLASESS_MODEL_LICENSE_PLATE = ['license_plate']
 
+MIN_CONFIDENCE = 0.4
+
 DETECTION_MODEL = {
     'license_plate' : {
         'filename': 'model_license_plate_iso_code.pt',
