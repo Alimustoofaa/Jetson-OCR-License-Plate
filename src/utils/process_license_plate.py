@@ -1,11 +1,12 @@
 import cv2
-import easyocr
 
 from .logger import logging
 from src.schema import ConfigOcr
 from src.app import LicensePlateDetection
 from src.app import OpticalCharacterRecognition
 from src.app import VehicleClassification
+
+from config import MIN_CONFIDENCE
 
 classification  = VehicleClassification()
 model           = LicensePlateDetection()
@@ -27,7 +28,7 @@ def detection_object(image):
 	'''
 	result_detection = model.prediction(image)
 	license_plate = model.filter_and_crop(
-		img=image, results=result_detection, min_confidence=0.0
+		img=image, results=result_detection, min_confidence=MIN_CONFIDENCE
 	)
 	if len(license_plate[0]) >=1 and license_plate[1] > 0 and len(license_plate[2]) == 4:
 		logging.info(f'Got license plate detection confidence : {round(license_plate[1], 2)*100} %')
@@ -49,7 +50,7 @@ def classification_vehicle(image, log=True):
 	'''
 	result_classification = classification.prediction(image)
 	vehicle_type = classification.filter_and_crop(
-		results=result_classification, min_confidence=0.0
+		results=result_classification, min_confidence=MIN_CONFIDENCE
 	)
 	if log:
 		if vehicle_type[0] and vehicle_type[1] and vehicle_type[2]:
