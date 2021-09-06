@@ -22,7 +22,7 @@ class LicensePlateDetection:
         self.model_path = os.path.join(DIRECTORY_MODEL, DETECTION_MODEL['license_plate']['filename'])
         self.check_model()
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        self.model = torch.hub.load('ultralytics/yolov5', 'custom', path_or_model=self.model_path)
+        self.model = torch.hub.load('ultralytics/yolov5', 'custom', path=self.model_path)
         self.model.to(self.device)
 
     def check_model(self):
@@ -97,5 +97,5 @@ class LicensePlateDetection:
         Retrun:
             result(models.common.Detections): result detection YoloV5(convert to result xyxy)
         '''
-        results = self.model(image)
+        results = self.model(image, size=320)
         return results

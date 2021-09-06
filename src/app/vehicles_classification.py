@@ -2,6 +2,7 @@ import os
 import torch
 import requests
 import numpy as np
+from torch._C import Size
 from tqdm import tqdm
 from pathlib import Path
 
@@ -16,7 +17,7 @@ class VehicleClassification:
 		self.model_path = os.path.join(DIRECTORY_MODEL, DETECTION_MODEL['yolov5s']['filename'])
 		self.check_model()
 		self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
-		self.model = torch.hub.load('ultralytics/yolov5', 'custom', path_or_model=self.model_path)
+		self.model = torch.hub.load('ultralytics/yolov5', 'custom', path=self.model_path)
 		self.model.to(self.device)
 	
 	def check_model(self):
@@ -82,5 +83,5 @@ class VehicleClassification:
 		Return:
 			results_prediction(models.common.Detections) : results -> convert to (results.xyxy/resultsxywh)
 		'''
-		results = self.model(image)
+		results = self.model(image, size=320)
 		return results
