@@ -29,3 +29,5 @@ wget https://github.com/Qengineering/Install-OpenCV-Jetson-Nano/raw/main/OpenCV-
 chmod 755 ./OpenCV-4-5-1.sh
 ./OpenCV-4-5-1.sh
 rm OpenCV-4-5-1.sh
+rm -rf opencv
+rm -rf opencv_contrib/
