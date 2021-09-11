@@ -17,3 +17,4 @@ uvicorn[standard]
 python-stdnum
 similarity
 strsim
+v4l2
