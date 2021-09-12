@@ -61,7 +61,7 @@ VEHICLE_CLASESS = ['car', 'bus', 'truck']
 
 CLASESS_MODEL_LICENSE_PLATE = ['license_plate']
 
-MIN_CONFIDENCE = 0.4
+MIN_CONFIDENCE = 0.1
 
 DETECTION_MODEL = {
     'license_plate' : {
