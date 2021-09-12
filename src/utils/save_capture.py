@@ -1,5 +1,3 @@
-import glob
-import os
 import cv2
 from pathlib import Path
 from config import DIRECTORY_SAVE_CAPTURE

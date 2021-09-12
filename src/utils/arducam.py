@@ -1,6 +1,5 @@
 import v4l2
 import fcntl
-import array
 import ctypes
 import cv2
 import numpy as np

@@ -1,5 +1,3 @@
-import glob
-from os import name
 import cv2
 import sys
 import time

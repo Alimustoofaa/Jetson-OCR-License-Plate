@@ -1,8 +1,6 @@
 import os
 import torch
 import requests
-import numpy as np
-from torch._C import Size
 from tqdm import tqdm
 from pathlib import Path
 
