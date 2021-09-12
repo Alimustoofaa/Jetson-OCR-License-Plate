@@ -97,5 +97,5 @@ class LicensePlateDetection:
         Retrun:
             result(models.common.Detections): result detection YoloV5(convert to result xyxy)
         '''
-        results = self.model(image, size=320)
+        results = self.model(image)
         return results
