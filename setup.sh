@@ -77,7 +77,7 @@ pip3 install -r requirements.txt
 echo "================ Install Arducam ================="
 wget https://github.com/ArduCAM/MIPI_Camera/releases/download/v0.0.3/install_full.sh
 chmod 755 ./install_full.sh
-./install_full.sh
+./install_full.sh -m arducam
 rm install_full.sh
 
 sudo reboot
