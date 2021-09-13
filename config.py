@@ -4,7 +4,7 @@ import numpy as np
 # Config
 ROOT = os.path.normpath(os.path.dirname(__file__))
 
-DIRECTORY_MODEL         = os.path.expanduser("~/.Halotec-Lpn/Model")
+DIRECTORY_MODEL         = os.path.expanduser('~/.Halotec-Lpn/Model')
 
 DIRECTORY_SAVE_CAPTURE  = os.path.join(ROOT, 'captures')
 
@@ -57,6 +57,19 @@ CLASESS_MODEL_YOLOV5 = [
     'hair drier', 'toothbrush'
 ]
 
+CLASESS_MODEL_SSDNET = [
+    'unlabeled', 'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 
+    'traffic light', 'fire hydrant', 'street sign', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 
+    'dog', 'horse', 'sheep', 'cow', 'elephant', 'bear', 'zebra', 'giraffe', 'hat', 'backpack', 'umbrella', 
+    'shoe', 'eye glasses', 'handbag', 'tie', 'suitcase', 'frisbee', 'skis', 'snowboard', 'sports ball', 
+    'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard', 'tennis racket', 'bottle', 'plate', 
+    'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple', 'sandwich', 'orange', 'broccoli', 
+    'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch', 'potted plant', 'bed', 'mirror', 
+    'dining table', 'window', 'desk', 'toilet', 'door', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 
+    'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'blender', 'book', 'clock', 'vase',
+    'scissors', 'teddy bear', 'hair drier', 'toothbrush'
+]
+
 VEHICLE_CLASESS = ['car', 'bus', 'truck']
 
 CLASESS_MODEL_LICENSE_PLATE = ['license_plate']
@@ -90,7 +103,7 @@ REPLACE_ABJAD2NUMBER_DICT = {
     'T': '7'
 }
 
-__file_kd_wilayah = open(os.path.join(os.getcwd(),'kode_wilayah.json'))
+__file_kd_wilayah = open(os.path.join(os.getcwd(),'./kode_wilayah.json'))
 KODE_WILAYAH_JSON = json.loads(__file_kd_wilayah.read())
 KODE_WILAYAH_LIST = [i for i in KODE_WILAYAH_JSON.keys()]
 
