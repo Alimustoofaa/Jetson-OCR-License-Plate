@@ -70,7 +70,7 @@ def main_ocr_license_plate(image):
 	start_time = time.time()
 	# Clasification vehicle
 	try: confidence_vehicle ,bbox_vehicle, vehicle_type = classification_vehicle(image)
-	except: vehicle_type = ''
+	except: confidence_vehicle ,bbox_vehicle, vehicle_type = 0,'', [0,0,0,0]
 
 	# Detection object
 	try: license_plate = detection_object(image)

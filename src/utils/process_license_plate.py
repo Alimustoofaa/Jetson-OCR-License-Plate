@@ -4,11 +4,11 @@ from .logger import logging
 from src.schema import ConfigOcr
 from src.app import LicensePlateDetection
 from src.app import OpticalCharacterRecognition
-from src.app import VehicleClassification
+from src.app import VehicleClassification_V2
 
 from config import MIN_CONFIDENCE
 
-classification  = VehicleClassification()
+classification  = VehicleClassification_V2()
 model           = LicensePlateDetection()
 ocr             = OpticalCharacterRecognition()
 
@@ -48,7 +48,7 @@ def classification_vehicle(image, log=True):
 			bbox(list): bbox object [x_min, y_min, x_max, y_max]
 		)
 	'''
-	result_classification = classification.prediction(image)
+	result_classification = classification.detection(image)
 	vehicle_type = classification.filter_and_crop(
 		results=result_classification, min_confidence=MIN_CONFIDENCE
 	)

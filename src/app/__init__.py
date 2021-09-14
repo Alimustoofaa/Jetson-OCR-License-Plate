@@ -1,4 +1,5 @@
 from .license_plate_detection import LicensePlateDetection
 from .license_plate_ocr import OpticalCharacterRecognition
 from .license_plate_extract import LicensePlateExtract
-from .vehicles_classification import VehicleClassification
+# from .vehicles_classification import VehicleClassification
+from .vehicles_classification_v2 import VehicleClassification as VehicleClassification_V2
