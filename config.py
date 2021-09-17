@@ -1,6 +1,8 @@
 import os
 import json
 import numpy as np
+
+POSITION_CAM = 'RA 88A'
 # Config
 ROOT = os.path.normpath(os.path.dirname(__file__))
 
