@@ -1,5 +1,6 @@
 import cv2
 import base64
+from .logger import asctime
 
 def draw_rectangle(image, bbox_dict, encoded=False):
 	'''
@@ -25,6 +26,11 @@ def draw_rectangle(image, bbox_dict, encoded=False):
 			# Add label
 			cv2.rectangle(image, (x_min, y_min), (x_min+50, y_min+15), color_reactangle, cv2.FILLED)
 			cv2.putText(image, f'{bbox_dict[name][0]}', (x_min+2,y_min+12), cv2.FONT_HERSHEY_PLAIN, 0.7, (255, 255, 255), 1)
+	
+	# Draw datetime in black background
+	asctime_str = asctime()
+	cv2.rectangle(image, (0, int((2/100)*image.shape[1])), (int((33/100)*image.shape[0]), 0), (0,0,0), cv2.FILLED)
+	cv2.putText(image, asctime_str, (10,15), cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255), 1)
 	if encoded:
 		image_list = cv2.imencode('.jpg', image)[1]
 		image_bytes = image_list.tobytes()
