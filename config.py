@@ -74,7 +74,7 @@ VEHICLE_CLASESS = ['car', 'bus', 'truck']
 
 CLASESS_MODEL_LICENSE_PLATE = ['license_plate']
 
-MIN_CONFIDENCE = 0.1
+MIN_CONFIDENCE = 0.2
 
 DETECTION_MODEL = {
     'license_plate' : {
@@ -126,3 +126,12 @@ sensor_modes 0x009a2082 (int)    			: min=0 max=30 step=1 default=30 value=5 fla
 '''
 # v4l2-ctl -d 0 --set-ctrl vertical_flip=1 -c exposure=50000 -c saturation=5000
 COMMAND_CAMERA_PROPERTY = 'v4l2-ctl -d 0 -c exposure=500000  -c saturation=5500'
+
+# Straming camera
+FPS = 30
+# -> Lounch string
+LAUNCH_STRING = 'appsrc name=source is-live=true block=true format=GST_FORMAT_TIME ' \
+                f'caps=video/x-raw,format=BGR,width=640,height=480,framerate={FPS}/1 ' \
+                '! videoconvert ! video/x-raw,format=I420 ' \
+                '! x264enc speed-preset=ultrafast tune=zerolatency ' \
+                '! rtph264pay config-interval=1 name=pay0 pt=96'
