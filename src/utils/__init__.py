@@ -10,3 +10,4 @@ from .logger import logging
 from. logger import datetime_format
 from .save_capture import save_capture
 from .arducam import ArducamUtils as ArducamConfig
+from .camera import CameraCSI
