@@ -26,7 +26,7 @@ def draw_rectangle(image, bbox_dict, encoded=False, datetime_watermark=False):
 			cv2.rectangle(image, (x_min, y_min), (x_max, y_max), color_reactangle, 2)
 			# Add label
 			cv2.rectangle(image, (x_min, y_min), (x_min+50, y_min+23), color_reactangle, cv2.FILLED)
-			cv2.putText(image, f'{bbox_dict[name][0]} | {bbox_dict[name][2]}', (x_min+2,y_min+12), cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255), 2)
+			cv2.putText(image, f'{bbox_dict[name][0]} | {bbox_dict[name][2]}', (x_min+2,y_min+12), cv2.FONT_HERSHEY_DUPLEX, 0.6, (255, 255, 255), 1)
 	
 	# Draw datetime in black background
 	if datetime_watermark:
