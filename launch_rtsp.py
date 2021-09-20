@@ -26,7 +26,7 @@ class SensorFactory(GstRtspServer.RTSPMediaFactory):
 			ret, frame 	= self.cap.read()
 			if ret:
 				# Vehicle detection and classification
-				try: confidence_vehicle ,bbox_vehicle, vehicle_type = classification_vehicle(frame)
+				try: confidence_vehicle ,bbox_vehicle, vehicle_type = classification_vehicle(frame, log=False)
 				except: confidence_vehicle ,bbox_vehicle, vehicle_type = 0,'', [0,0,0,0]
 				# Draw rectangle
 				fram_rec = draw_rectangle(
