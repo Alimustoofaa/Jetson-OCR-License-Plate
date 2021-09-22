@@ -91,8 +91,8 @@ def main_ocr_license_plate(image):
 	image_encoded = draw_rectangle(
 		image,
 		{
-			'license_plate': ['plate',bbox_license_plate,confidence_vehicle], 
-			'vehicle_type': [vehicle_type, bbox_vehicle,confidence_license_plate]
+			'license_plate': ['plate',bbox_license_plate,round((confidence_vehicle*100),2)], 
+			'vehicle_type': [vehicle_type, bbox_vehicle,round((confidence_license_plate*100),2)]
 		}, 
 		encoded=True, datetime_watermark=True
 	)
