@@ -2,6 +2,7 @@ import os
 import pytz
 from pathlib import Path
 from datetime import datetime
+from config import DIRECTORY_LOGGER
 
 ist = pytz.timezone('Asia/Jakarta')
 
@@ -24,7 +25,7 @@ def get_path_log():
     Set path log in path logging/yaer/month/day/log_name.log
     '''
     year, month, day, hour, minute, _, _ = datetime_format()
-    path_name = f'logger/{year}/{month}/{day}'
+    path_name = f'{DIRECTORY_LOGGER}/{year}/{month}/{day}'
     Path(path_name).mkdir(parents=True, exist_ok=True)
     log_filename = f'logging_{hour}, {day}-{month}-{year}.log'
     log_file_full_name = os.path.join(path_name, log_filename)
