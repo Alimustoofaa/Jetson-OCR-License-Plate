@@ -94,7 +94,7 @@ def main_ocr_license_plate(image):
 			'license_plate': ['plate',bbox_license_plate,confidence_vehicle], 
 			'vehicle_type': [vehicle_type, bbox_vehicle,confidence_license_plate]
 		}, 
-		encoded=True,, datetime_watermark=True
+		encoded=True, datetime_watermark=True
 	)
  
 	end_time = round((time.time() - start_time),2)
