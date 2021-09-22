@@ -6,17 +6,11 @@ POSITION_CAM = 'RA 88A'
 # Config
 ROOT = os.path.normpath(os.path.dirname(__file__))
 
-DIRECTORY_MODEL         = os.path.expanduser('~/.Halotec-Lpn/Model')
+DIRECTORY_MODEL         = os.path.expanduser('~/.Halotec-LPR/Model')
+
+DIRECTORY_LOGGER        = os.path.expanduser('~/.Halotec-LPR/Logger')
 
 DIRECTORY_SAVE_CAPTURE  = os.path.join(ROOT, 'captures')
-
-CAMERA_URL = {
-    'url' : [
-        'http://119.2.50.116:83/mjpg/video.mjpg?camera=1&timestamp=1617707000118',
-        'rtsp://root:halotec@192.168.0.11/axis-media/media.amp',
-        'http://192.168.0.11:9080/mjpg/video.mjpg'
-    ]
-}
 
 GSTREAMER_PIPELINE = {
     'resolutions': {
@@ -33,31 +27,13 @@ RESOLUTIONS = {
     'low': (320, 240)
 }
 
-ADAM_CONFIG = {
-    'ip' : '192.168.0.126',
-    'username' : 'root',
-    'password' : '00000000'
-}
-
-PORT = 8004
+PORT = 8001
 
 A = (750, 800)
 B = (1370,850)
 C = (1480,780)
 D = (1000, 760)
 AREA_DETECTION = np.array([A, B, C, D], np.int32)
-
-CLASESS_MODEL_YOLOV5 = [
-    'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
-    'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
-    'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
-    'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
-    'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
-    'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
-    'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
-    'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
-    'hair drier', 'toothbrush'
-]
 
 CLASESS_MODEL_SSDNET = [
     'unlabeled', 'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 
