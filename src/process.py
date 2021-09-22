@@ -80,10 +80,10 @@ def main_ocr_license_plate(image):
 	if len(license_plate[0]) >=1 and\
 		license_plate[1] > 0 and\
 		len(license_plate[2]) == 4:
-		image_license_plate, bbox_license_plate = license_plate[0], license_plate[2]
+		image_license_plate, bbox_license_plate, confidence_license_plate = license_plate[0], license_plate[2], license_plate[1]
 	else:
 		# Get manual crop container characteristic with detect char and filter bbox character\
-		image_license_plate, bbox_license_plate = image, list()
+		image_license_plate, bbox_license_plate, confidence_license_plate = image, list(), 0
 	text_license_plate, conf_license_plate = __process_license_plate(
 		image, image_license_plate, bbox_license_plate
 	)
@@ -91,10 +91,10 @@ def main_ocr_license_plate(image):
 	image_encoded = draw_rectangle(
 		image,
 		{
-			'license_plate': ['plate',bbox_license_plate], 
-			'vehicle_type': [vehicle_type, bbox_vehicle]
+			'license_plate': ['plate',bbox_license_plate,confidence_vehicle], 
+			'vehicle_type': [vehicle_type, bbox_vehicle,confidence_license_plate]
 		}, 
-		encoded=True
+		encoded=True,, datetime_watermark=True
 	)
  
 	end_time = round((time.time() - start_time),2)
