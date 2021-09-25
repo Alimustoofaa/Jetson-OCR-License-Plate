@@ -39,27 +39,19 @@ class VehicleClassification:
 			results(jetson.inference.detectNet.Detection) : results prediction ssd-mobilenet-v2
 			min_confidence(float(range 0.0 - 1.0)) : minimal confidence for filter results
 		Return:
-			result(tuple) : (confidence, bbox, clases_name)
+			result(list) : [x_min, y_min, x_max, y_max, classes_name, confidence]
 		'''
-		max_conf, bbox, clases = 0.0, list(), str()
+		vehicle_list = list()
 
 		if len(results) >= 1:
 			for result in results:
 				classes_name    = CLASESS_MODEL_SSDNET[int(result.ClassID)]
 				confidence      = result.Confidence
 				if classes_name in VEHICLE_CLASESS and confidence > min_confidence:
-					max_conf        = confidence
 					x_min, y_min    = int(result.Left), int(result.Top)
 					x_max, y_max    = int(result.Right), int(result.Bottom)
-					bbox, clases    = [x_min, y_min, x_max, y_max], classes_name
-				else:
-					max_conf 	= max_conf
-					bbox		= bbox
-					clases		= clases
-		else : max_conf, bbox, clases = 0.0, list(), str()
-
-		vehicles_classification = (max_conf, bbox, clases)
-		return vehicles_classification
+					vehicle_list.append([x_min, y_min, x_max, y_max, classes_name, confidence])
+		return vehicle_list
 
 	def detection(self, image):
 		'''
