@@ -26,6 +26,7 @@ RESOLUTIONS = {
     'medium': (640, 480),
     'low': (320, 240)
 }
+URL_VEHICLE_API = 'http://192.168.0.168:8765/list_vehicles/add'
 
 PORT = 8001
 
