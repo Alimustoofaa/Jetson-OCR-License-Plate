@@ -29,10 +29,17 @@ RESOLUTIONS = {
 
 PORT = 8001
 
-A = (750, 800)
-B = (1370,850)
-C = (1480,780)
-D = (1000, 760)
+'''
+Area Detection
+    D------------C
+    |            |
+    |            |
+    A------------B
+'''
+A = (816, 848)
+B = (1918, 735)
+C = (1336, 598)
+D = (615, 606)
 AREA_DETECTION = np.array([A, B, C, D], np.int32)
 
 CLASESS_MODEL_SSDNET = [
@@ -49,6 +56,12 @@ CLASESS_MODEL_SSDNET = [
 ]
 
 VEHICLE_CLASESS = ['car', 'bus', 'truck']
+
+COLOR = {
+	'car'	: (0, 153, 0),
+	'truck'	: (204,0,102),
+	'bus'	: (204, 102, 0)
+}
 
 CLASESS_MODEL_LICENSE_PLATE = ['license_plate']
 
