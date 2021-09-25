@@ -93,6 +93,8 @@ class SensorFactory(GstRtspServer.RTSPMediaFactory):
 				buf.offset 		= timestamp
 				self.number_frames += 1
 				retval 			= src.emit('push-buffer', buf)
+				if retval != Gst.FlowReturn.OK:
+					logging.info('Client Disconnect')
 
 	def do_create_element(self, url):
 		return Gst.parse_launch(self.launch_string)
