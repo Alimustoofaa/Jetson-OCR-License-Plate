@@ -49,14 +49,14 @@ def classification_vehicle(image, log=True):
 		)
 	'''
 	result_classification = classification.detection(image)
-	vehicle_type = classification.filter_and_crop(
+	results_vehicle_list = classification.filter_and_crop(
 		results=result_classification, min_confidence=MIN_CONFIDENCE
 	)
-	if log:
-		if vehicle_type[0] and vehicle_type[1] and vehicle_type[2]:
-			logging.info(f'Got classification {vehicle_type[2]} confidence : {round(vehicle_type[0], 2)*100} %')
-		else: logging.info(f'Not found object classification')
-	return vehicle_type
+	# if log:
+	# 	if vehicle_type[0] and vehicle_type[1] and vehicle_type[2]:
+	# 		logging.info(f'Got classification {vehicle_type[2]} confidence : {round(vehicle_type[0], 2)*100} %')
+	# 	else: logging.info(f'Not found object classification')
+	return results_vehicle_list
 	
 def resize(image, height_percent=180, width_percent=180):
 	'''
