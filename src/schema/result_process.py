@@ -2,17 +2,17 @@ from typing import List
 from pydantic import BaseModel
 
 class VehicleClassification(BaseModel):
-	bbox: List
-	confidence: float
-	clases: str
+	vehicle_type: str
+	image: bytes
 
 class LicensePlate(BaseModel):
 	bbox: List
+	license_plate: str
 	confidence: float
-	result_ocr: str
+	image: bytes
 	
 class ResultProcess(BaseModel):
+	id: int
+	processing_time: float
 	vehicle_classification: VehicleClassification
 	license_plate: LicensePlate
-	processing_time: float
-	image: bytes
