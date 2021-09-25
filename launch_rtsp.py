@@ -1,6 +1,8 @@
 
 import cv2
 import gi
+import time
+import subprocess
 from datetime import datetime
 from threading import Thread
 from src.process import main_ocr_license_plate
@@ -55,7 +57,8 @@ class SensorFactory(GstRtspServer.RTSPMediaFactory):
 					if not id in self.unique_id:
 						crop_img 		= frame[y_min-15:y_max+15, x_min-15:x_max+15]
 						timestamp_id 	= int(datetime.timestamp(datetime.now()))
-						Thread(target=main_ocr_license_plate, args=(crop_img, classes, timestamp_id)).start()
+						result_vehicle	= [timestamp_id, crop_img, classes, conf]
+						Thread(target=main_ocr_license_plate, args=(crop_img, result_vehicle, )).start()
 						# Change color line
 						cv2.line(image, (D[0], D[1]), (C[0], C[1]), (0, 0, 225), thickness=2) #TOP
 						# Reset value unique_id
@@ -113,10 +116,19 @@ class GstServer(GstRtspServer.RTSPServer):
 		self.get_mount_points().add_factory("/streaming", self.factory)
 		self.attach(None)
 		logging.info('Server running in : rtsp://127.0.0.1:8554/streaming')
-
+		time.sleep(10)
+		# subprocess.Popen([
+		# 	'sleep 20 && gst-launch-1.0 -e rtspsrc location=rtsp://127.0.0.1:8554/streaming protocols=tcp ! rtph264depay ! h264parse ! mp4mux ! filesink location=test.mp4'
+		# ], shell=True, close_fds=True)
 
 GObject.threads_init()
 Gst.init(None)
 server = GstServer()
 loop = GObject.MainLoop()
 loop.run()
+# context = loop.get_context()
+# while True:
+# 	subprocess.Popen([
+# 		'sleep 40 && gst-launch-1.0 -e rtspsrc location=rtsp://127.0.0.1:8554/streaming protocols=tcp ! rtph264depay ! h264parse ! mp4mux ! filesink location=test.mp4'
+# 	], shell=True, close_fds=True)
+# 	context.iteration(True)
