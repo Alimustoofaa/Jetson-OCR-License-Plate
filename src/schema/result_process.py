@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 class VehicleClassification(BaseModel):
 	vehicle_type: str
+	confidence: float
 	image: bytes
 
 class LicensePlate(BaseModel):
