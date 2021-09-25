@@ -3,15 +3,15 @@ import sys
 import time
 import subprocess
 import numpy as np
-
+from threading import Thread
 from config import COMMAND_CAMERA_PROPERTY
 
 from .utils import logging
 from .app import LicensePlateExtract
 from .schema import ResultProcess
 from .utils import (detection_object, classification_vehicle, 
-					resize, detect_char, read_text, draw_rectangle,
-					ArducamConfig, save_capture)
+					resize, detect_char, read_text, encode_image,
+					ArducamConfig, save_capture, request_post_api)
 
 def __process_license_plate(image, image_detection, bbox):
 	'''
@@ -57,13 +57,12 @@ def __process_license_plate(image, image_detection, bbox):
 	logging.info(f'Confidence : {conf_license_plate*100} %')
 	return text_license_plate, conf_license_plate
 
-def main_ocr_license_plate(image_vehicle, vehicle_type, timestamp):
+def main_ocr_license_plate(image_vehicle, result_vehicle_type):
 	'''
 	Detection license plate and process ocr license plate
 	Args:
 		image_vehicle(np.array): Image crop vehicle
-		vehicle_type(str): vehicle type
-		timestamp(int): timestamp
+		result_vehicle_type(list): [id_timestamp, crop_image, classes, confidence]
 	Return:
 		result(dict): {
 			id : timestamp(int),
@@ -80,8 +79,11 @@ def main_ocr_license_plate(image_vehicle, vehicle_type, timestamp):
 			}
 		}
 	'''
-	start_time 		= time.time()
-	image			= image_vehicle.copy()
+	start_time 			= time.time()
+	timestamp			= result_vehicle_type[0]
+	image				= result_vehicle_type[1]
+	vehicle_type		= result_vehicle_type[2]
+	confidence_vehicle	= result_vehicle_type[3]
 	logging.info(f'========== Process LPR id {timestamp} ==========')
 	logging.info(f'Vehiecle Type : {vehicle_type}')
 	# Detection object
@@ -100,8 +102,8 @@ def main_ocr_license_plate(image_vehicle, vehicle_type, timestamp):
 		image, image_license_plate, bbox_license_plate
 	)
 	# Encode image vehicle and license plate
-	image_vehicle_type_encoded	= draw_rectangle.encode_image(image_vehicle)
-	image_license_plate_encoded	= draw_rectangle.encode_image(image_license_plate)
+	image_vehicle_type_encoded	= encode_image(image_vehicle)
+	image_license_plate_encoded	= encode_image(image_license_plate)
  
 	end_time = round((time.time() - start_time),2)
 	logging.info(f'Time Processing : {end_time} s')
@@ -111,6 +113,7 @@ def main_ocr_license_plate(image_vehicle, vehicle_type, timestamp):
 		processing_time 		= end_time,
 		vehicle_classification 	= {
 			'vehicle_type'		: vehicle_type,
+			'confidence'		: confidence_vehicle,
 			'image'				: image_vehicle_type_encoded
 		},
 		license_plate 			= {
@@ -121,5 +124,5 @@ def main_ocr_license_plate(image_vehicle, vehicle_type, timestamp):
 		}
 	)
 	# HANDLE POST TO SERVER
-	time.sleep(3)
+	Thread(target=request_post_api, args=(result, )).start()
 	return result.dict()
