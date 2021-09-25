@@ -12,6 +12,7 @@ from .schema import ResultProcess
 from .utils import (detection_object, classification_vehicle, 
 					resize, detect_char, read_text, draw_rectangle,
 					ArducamConfig, save_capture)
+
 def __process_license_plate(image, image_detection, bbox):
 	'''
 	Preprocess and process ocr license plate indonesia
@@ -56,22 +57,33 @@ def __process_license_plate(image, image_detection, bbox):
 	logging.info(f'Confidence : {conf_license_plate*100} %')
 	return text_license_plate, conf_license_plate
 
-def main_ocr_license_plate(image):
+def main_ocr_license_plate(image_vehicle, vehicle_type, timestamp):
 	'''
 	Detection license plate and process ocr license plate
 	Args:
-		image(np.array): Image for process license plate
+		image_vehicle(np.array): Image crop vehicle
+		vehicle_type(str): vehicle type
+		timestamp(int): timestamp
 	Return:
-		vehicle_type(str): type vehicle classification
-		text_license_plate(str): result license plate
-		conf_license_plate(float): confidence level ocr
-		end_time(float): Processing time
+		result(dict): {
+			id : timestamp(int),
+			process_time : float,
+			vehicle_classification : {
+				image: bytes,
+				vehicle_type: str
+			},
+			license_plate : {
+				bbox : list([x_min, y_min, x_max, y_max]),
+				license_plate: str,
+				confidence: float,
+				image: bytes
+			}
+		}
 	'''
-	start_time = time.time()
-	# Clasification vehicle
-	try: confidence_vehicle ,bbox_vehicle, vehicle_type = classification_vehicle(image)
-	except: confidence_vehicle ,bbox_vehicle, vehicle_type = 0,'', [0,0,0,0]
-
+	start_time 		= time.time()
+	image			= image_vehicle.copy()
+	logging.info(f'========== Process LPR id {timestamp} ==========')
+	logging.info(f'Vehiecle Type : {vehicle_type}')
 	# Detection object
 	try: license_plate = detection_object(image)
 	except: license_plate = (np.array([], dtype=np.uint8), 0, list())
@@ -87,101 +99,27 @@ def main_ocr_license_plate(image):
 	text_license_plate, conf_license_plate = __process_license_plate(
 		image, image_license_plate, bbox_license_plate
 	)
-	# Draw bbox rectangle
-	image_encoded = draw_rectangle(
-		image,
-		{
-			'license_plate': ['plate',bbox_license_plate,round((confidence_vehicle*100),2)], 
-			'vehicle_type': [vehicle_type, bbox_vehicle,round((confidence_license_plate*100),2)]
-		}, 
-		encoded=True, datetime_watermark=True
-	)
+	# Encode image vehicle and license plate
+	image_vehicle_type_encoded	= draw_rectangle.encode_image(image_vehicle)
+	image_license_plate_encoded	= draw_rectangle.encode_image(image_license_plate)
  
 	end_time = round((time.time() - start_time),2)
 	logging.info(f'Time Processing : {end_time} s')
 	# result = (vehicle_type, text_license_plate, conf_license_plate, end_time)
 	result = ResultProcess(
-		vehicle_classification = {
-			'bbox': bbox_vehicle,
-			'confidence': confidence_vehicle,
-			'clases': vehicle_type
+		id 						= timestamp,
+		processing_time 		= end_time,
+		vehicle_classification 	= {
+			'vehicle_type'		: vehicle_type,
+			'image'				: image_vehicle_type_encoded
 		},
-		license_plate = {
-			'bbox': bbox_license_plate,
-			'result_ocr': text_license_plate,
-			'confidence': conf_license_plate
-		},
-		processing_time = end_time,
-		image = image_encoded
+		license_plate 			= {
+			'bbox'				: bbox_license_plate,
+			'license_plate'		: text_license_plate,
+			'confidence'		: conf_license_plate,
+			'image'				: image_license_plate_encoded
+		}
 	)
+	# HANDLE POST TO SERVER
+	time.sleep(3)
 	return result.dict()
-
-
-frame_image_encoded = np.array([])
-
-def vehicle_detection_and_counting():
-	'''
-	Procesing live detection vehicle in camera video
-	-> Run Camera
-	-> Classification Vehicle
-	-> Processing bbox
-	-> Vehicle Counting
-
-	'''
-	global frame_image_encoded
-
-	PREDICTION_BORDER_Y = [550, 550]
-	PREDICTION_BORDER_X = [700, 1400]
-
-	try:
-		# camera = cv2.VideoCapture("filesrc location=/home/ocr/Halotec/Jetson-OCR-License-Plate/captures/3.mp4 ! qtdemux ! h264parse ! omxh264dec ! nvvidconv ! video/x-raw, format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink", cv2.CAP_GSTREAMER)
-		camera			= cv2.VideoCapture(0, cv2.CAP_V4L2)
-		arducam_conf	= ArducamConfig(0)
-	except:
-		print('Reconnect camera..')
-		camera			= cv2.VideoCapture(0, cv2.CAP_V4L2)
-		arducam_conf	= ArducamConfig(0)
-		time.sleep(1)
-
-	camera.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
-	camera.set(cv2.CAP_PROP_CONVERT_RGB, arducam_conf.convert2rgb)
-	camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-	camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-	camera.set(cv2.CAP_PROP_FPS, 15)
-
-	# Run shell v4l2-ctl, worked with 7 loop
-	for _ in range(7):
-		subprocess.call([COMMAND_CAMERA_PROPERTY], shell=True)
-		ret, frame = camera.read()
-	
-	while True:
-		ret, frame = camera.read()
-		if ret: #print('Error Camera Module'); sys.exit(1)
-			image = frame.copy()
-			# Draw line
-			# frame = cv2.resize(frame, (300, 300), interpolation = cv2.INTER_AREA)
-			
-			# Vehicle Detection
-			start_time = time.time()
-			try: confidence_vehicle ,bbox_vehicle, vehicle_type = classification_vehicle(cv2.resize(frame, (300, 300), interpolation = cv2.INTER_AREA), log=False)
-			except: confidence_vehicle, vehicle_type, bbox_vehicle = 0,'', [0,0,0,0] 
-
-			if confidence_vehicle and len(bbox_vehicle)>1 and len(vehicle_type)>2:
-				# Calculate Centroid
-				x, y = int((bbox_vehicle[0] + bbox_vehicle[2])/2), int((bbox_vehicle[1] + bbox_vehicle[3])/2)
-				cv2.circle(frame, (x, y), 3, (0, 255, 0), -1)
-
-				# Process counting
-				if x in range(PREDICTION_BORDER_X[0], PREDICTION_BORDER_X[1]) and y in range(PREDICTION_BORDER_Y[1], PREDICTION_BORDER_Y[1]+10):
-					cv2.line(frame, (PREDICTION_BORDER_X[0],PREDICTION_BORDER_Y[0]), (PREDICTION_BORDER_X[1], PREDICTION_BORDER_Y[1]), (0, 0, 255), 2)
-					save_capture(image, name=f'{vehicle_type}_{round(confidence_vehicle, 2)}')
-					# save_db(bbox_vehicle, confidence_vehicle, vehicle_type)
-			# Draw ractangle image
-			cv2.line(frame, (PREDICTION_BORDER_X[0],PREDICTION_BORDER_Y[0]), (PREDICTION_BORDER_X[1], PREDICTION_BORDER_Y[1]), (255, 0, 0), 2)
-			image_encoded = draw_rectangle(
-				frame,
-				{'vehicle_type': [vehicle_type, bbox_vehicle]}, 
-				encoded=True
-			)
-			frame_image_encoded = image_encoded
-		else:  break
