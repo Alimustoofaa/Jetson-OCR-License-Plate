@@ -15,5 +15,6 @@ class LicensePlate(BaseModel):
 class ResultProcess(BaseModel):
 	id: int
 	processing_time: float
+	rest_area:str
 	vehicle_classification: VehicleClassification
 	license_plate: LicensePlate

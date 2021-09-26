@@ -4,7 +4,7 @@ import time
 import subprocess
 import numpy as np
 from threading import Thread
-from config import COMMAND_CAMERA_PROPERTY
+from config import COMMAND_CAMERA_PROPERTY, POSITION_CAM
 
 from .utils import logging
 from .app import LicensePlateExtract
@@ -111,6 +111,7 @@ def main_ocr_license_plate(image_vehicle, result_vehicle_type):
 	result = ResultProcess(
 		id 						= timestamp,
 		processing_time 		= end_time,
+		rest_area				= POSITION_CAM.split(' ')[1],
 		vehicle_classification 	= {
 			'vehicle_type'		: vehicle_type,
 			'confidence'		: confidence_vehicle,
