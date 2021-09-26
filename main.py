@@ -9,6 +9,7 @@ import io
 import cv2
 import numpy as np
 from PIL import Image
+from datetime import datetime
 from fastapi import FastAPI, File
 
 from src.utils import logging
@@ -28,7 +29,7 @@ async def input_image_for_predictions(file: bytes = File(...)):
 	image = Image.open(io.BytesIO(file)).convert("RGB")
 	image = np.array(image)
 	image = image[:,:,::-1].copy()
-	timestamp			= 654284647
+	timestamp			= int(datetime.timestamp(datetime.now()))
 	vehicle_type		= 'car'
 	confidence_vehicle	= 0.8
 	result_vehicle	= [timestamp, image, vehicle_type, confidence_vehicle]
