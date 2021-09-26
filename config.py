@@ -1,8 +1,9 @@
 import os
 import json
+import socket
 import numpy as np
 
-POSITION_CAM = 'RA 88A'
+POSITION_CAM = f'RA {socket.gethostname().split("restarea")[1].upper()}'
 # Config
 ROOT = os.path.normpath(os.path.dirname(__file__))
 
@@ -28,6 +29,24 @@ RESOLUTIONS = {
 }
 URL_VEHICLE_API = 'http://149.129.48.59:8081/list_vehicles/add'
 
+_URL_STREAMING_RTMP = f'rtmp://149.129.48.59:1935/live/{POSITION_CAM.split(" ")[1]}'
+
+COMMAND_FFMPEG = [
+    'ffmpeg',
+    '-y',
+    '-f', 'rawvideo',
+    '-vcodec', 'rawvideo',
+    '-pix_fmt', 'bgr24',
+    '-s', '640x480',
+    '-r', '30',
+    '-i', '-',
+    '-c:v', 'libx264',
+    '-b:v', '300K',
+    '-pix_fmt', 'yuv420p',
+    # '-preset', 'medium',
+    '-f', 'flv',
+    _URL_STREAMING_RTMP
+]
 PORT = 8001
 
 '''
