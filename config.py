@@ -56,10 +56,19 @@ Area Detection
     |            |
     A------------B
 '''
-A = (816, 848)
-B = (1918, 735)
-C = (1336, 598)
-D = (615, 606)
+if POSITION_CAM.split(" ")[1] == '88A':
+    A, B = (816, 848), (1918, 735)
+    C, D = (1336, 598), (615, 606)
+elif POSITION_CAM.split(" ")[1] == '88B':
+    A, B = (816, 848), (1918, 735)
+    C, D = (1336, 598), (615, 606)
+elif POSITION_CAM.split(" ")[1] == '207':
+    A, B = (816, 848), (1918, 735)
+    C, D = (1336, 598), (615, 606)
+elif POSITION_CAM.split(" ")[1] == '379':
+    A, B = (816, 848), (1918, 735)
+    C, D = (1336, 598), (615, 606)
+
 AREA_DETECTION = np.array([A, B, C, D], np.int32)
 
 CLASESS_MODEL_SSDNET = [
