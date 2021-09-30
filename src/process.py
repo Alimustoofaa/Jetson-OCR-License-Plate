@@ -85,7 +85,7 @@ def main_ocr_license_plate(image_vehicle, result_vehicle_type):
 	timestamp			= result_vehicle_type[0]
 	image				= result_vehicle_type[1]
 	vehicle_type		= result_vehicle_type[2]
-	confidence_vehicle	= result_vehicle_type[3]
+	confidence_vehicle	= round(result_vehicle_type[3], 2)
 	logging.info(f'========== Process LPR id {timestamp} ==========')
 	logging.info(f'Vehiecle Type : {vehicle_type}')
 	# Detection object
