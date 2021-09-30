@@ -38,6 +38,7 @@ class SensorFactory(GstRtspServer.RTSPMediaFactory):
 
 	def process_trigger_vehicle(self, frame):
 		image = frame.copy()
+		new_image = frame.copy()
 		# Vehicle detection and classification
 		try: vehicle_classification_list	= classification_vehicle(frame, log=False)
 		except: vehicle_classification_list = list()
@@ -53,22 +54,22 @@ class SensorFactory(GstRtspServer.RTSPMediaFactory):
 				# Calculate Centroid
 				x, y = int((x_min + x_max)/2), int((y_min + y_max)/2)
 				# Condition Count Object
-				if x in range(A[0], C[0]+50) and y in range(C[1],C[1]+50):
+				if x in range(A[0], C[0]+20) and y in range(C[1],C[1]+20):
 					if not id in self.unique_id:
-						crop_img 		= frame[y_min-15:y_max+15, x_min-15:x_max+15]
+						crop_img 		= new_image[y_min:y_max, x_min:x_max]
 						timestamp_id 	= int(datetime.timestamp(datetime.now()))
 						result_vehicle	= [timestamp_id, crop_img, classes, conf]
-						Thread(target=main_ocr_license_plate, args=(crop_img, result_vehicle, )).start()
+						Thread(target=main_ocr_license_plate, args=(crop_img, result_vehicle, ), daemon = True).start()
 						# Change color line
 						cv2.line(image, (D[0], D[1]), (C[0], C[1]), (0, 0, 225), thickness=2) #TOP
 						# Reset value unique_id
-						if len(self.unique_id) > 100: self.unique_id = list()
+						if len(self.unique_id) > 300: self.unique_id = list()
 						self.unique_id.append(id)
 				# Draw circle in centroid rectangle
 				cv2.circle(frame, (x,y), 2, (0, 0, 255), -1)
 
 		# Reset value trakcer id
-		if self.tracker.id_count > 200: self.tracker.id_count = 0
+		if self.tracker.id_count > 600: self.tracker.id_count = 0
 
 		# Color Block
 		cv2.fillPoly(frame, [AREA_DETECTION],  (51, 153, 255))

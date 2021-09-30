@@ -24,6 +24,8 @@ def __process_license_plate(image, image_detection, bbox):
 		text_license_plate(str): result license plate
 		conf_license_plate(float): confidence level ocr
 	'''
+	cv2.imwrite('image.jpg', image)
+	cv2.imwrite('image_detection.jpg', image_detection)
 	
 	if bbox and len(image_detection) >= 1:
 		# Resize image if width < 150
@@ -97,9 +99,9 @@ def main_ocr_license_plate(image_vehicle, result_vehicle_type):
 		image_license_plate, bbox_license_plate, confidence_license_plate = license_plate[0], license_plate[2], license_plate[1]
 	else:
 		# Get manual crop container characteristic with detect char and filter bbox character\
-		image_license_plate, bbox_license_plate, confidence_license_plate = image, list(), 0
+		image_license_plate, bbox_license_plate, confidence_license_plate = image_vehicle, list(), 0
 	text_license_plate, conf_license_plate = __process_license_plate(
-		image, image_license_plate, bbox_license_plate
+		image_vehicle, image_license_plate, bbox_license_plate
 	)
 	# Encode image vehicle and license plate
 	image_vehicle_type_encoded	= encode_image(image_vehicle)

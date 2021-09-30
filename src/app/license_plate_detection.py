@@ -75,8 +75,8 @@ class LicensePlateDetection:
                         max_conf_license_plate = confidence
                         x1, y1 = int(results_format[0][i][0]), int(results_format[0][i][1])
                         x2, y2 = int(results_format[0][i][2]), int(results_format[0][i][3])
-                        cropped_img = img[y1-10 : y2+10, x1-10 : x2+10]
-                        bbox_license_plate = [x1-10, y1-10, x2+10, y2+10]
+                        cropped_img = img[y1 : y2, x1 : x2]
+                        bbox_license_plate = [x1, y1, x2, y2]
                         img_license_plate = cropped_img
                     else:
                         max_conf_license_plate  = max_conf_license_plate
