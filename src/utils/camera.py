@@ -16,8 +16,8 @@ class CameraCSI:
 			self.camera = cv2.VideoCapture(self.num_device, cv2.CAP_V4L2)
 			self.camera.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('U', 'Y', 'V', 'Y'))
 			# self.cap.set(cv2.CAP_PROP_CONVERT_RGB, self.cap.convert2rgb)
-			self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-			self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+			self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+			self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 			self.camera.set(cv2.CAP_PROP_FPS, 30)
 			self.__run_config_arducam()
 		else:

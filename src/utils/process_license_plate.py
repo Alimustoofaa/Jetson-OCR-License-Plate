@@ -50,7 +50,7 @@ def classification_vehicle(image, log=True):
 	'''
 	result_classification = classification.detection(image)
 	results_vehicle_list = classification.filter_and_crop(
-		results=result_classification, min_confidence=MIN_CONFIDENCE
+		results=result_classification, min_confidence=MIN_CONFIDENCE+0.2
 	)
 	# if log:
 	# 	if vehicle_type[0] and vehicle_type[1] and vehicle_type[2]:

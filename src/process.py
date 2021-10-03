@@ -24,8 +24,6 @@ def __process_license_plate(image, image_detection, bbox):
 		text_license_plate(str): result license plate
 		conf_license_plate(float): confidence level ocr
 	'''
-	cv2.imwrite('image.jpg', image)
-	cv2.imwrite('image_detection.jpg', image_detection)
 	
 	if bbox and len(image_detection) >= 1:
 		# Resize image if width < 150

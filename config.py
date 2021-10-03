@@ -14,77 +14,85 @@ DIRECTORY_LOGGER        = os.path.expanduser('~/.Halotec-LPR/Logger')
 DIRECTORY_SAVE_CAPTURE  = os.path.join(ROOT, 'captures')
 
 GSTREAMER_PIPELINE = {
-    'resolutions': {
-        'high'      : (720, 1280),
-        'medium'    : (640, 480),
-        'low'       : (320, 240) },
-    'framerate'     : 21,
-    'flip_method'   : 0
+	'resolutions': {
+		'high'      : (720, 1280),
+		'medium'    : (640, 480),
+		'low'       : (320, 240) },
+	'framerate'     : 21,
+	'flip_method'   : 0
 }
 
 RESOLUTIONS = {
-    'high': (1280, 720),
-    'medium': (640, 480),
-    'low': (320, 240)
+	'high': (1280, 720),
+	'medium': (640, 480),
+	'low': (320, 240)
 }
 URL_VEHICLE_API = 'http://149.129.48.59:8081/list_vehicles/add'
 
-_URL_STREAMING_RTMP = f'rtmp://149.129.48.59:1935/live/{POSITION_CAM.split(" ")[1]}'
+_URL_STREAMING_RTMP = f'rtmp://149.129.48.59/live/restarea207a'
 
 COMMAND_FFMPEG = [
-    'ffmpeg',
-    '-y',
-    '-f', 'rawvideo',
-    '-vcodec', 'rawvideo',
-    '-pix_fmt', 'bgr24',
-    '-s', '640x480',
-    '-r', '30',
-    '-i', '-',
-    '-c:v', 'libx264',
-    '-b:v', '300K',
-    '-pix_fmt', 'yuv420p',
-    # '-preset', 'medium',
-    '-f', 'flv',
-    _URL_STREAMING_RTMP
+	'ffmpeg',
+	'-y',
+	'-f', 'rawvideo',
+	# '-stream_loop', '-1',
+	'-vcodec', 'rawvideo',
+	'-pix_fmt', 'bgr24',
+	'-s', '600x400',
+	'-r', '15',
+	'-i', '-',
+	'-c:v', 'libx264',
+	'-b:v', '300K',
+	'-pix_fmt', 'yuv420p',
+	# '-preset', 'medium',
+	'-f', 'flv',
+	'-flvflags', 'no_duration_filesize',
+	_URL_STREAMING_RTMP
 ]
 PORT = 8001
 
 '''
 Area Detection
-    D------------C
-    |            |
-    |            |
-    A------------B
+	D------------C
+	|            |
+	|            |
+	A------------B
 '''
 if POSITION_CAM.split(" ")[1] == '88A':
-    A, B = (816, 848), (1918, 735)
-    C, D = (1336, 598), (615, 606)
+	A, B = (816, 848), (1918, 735)
+	C, D = (1336, 598), (615, 606)
 elif POSITION_CAM.split(" ")[1] == '88B':
     A, B = (645, 567), (1234, 369)
     C, D = (691, 301), (100, 352)
 elif POSITION_CAM.split(" ")[1] == '207':
-    A, B = (816, 848), (1918, 735)
-    C, D = (1336, 598), (615, 606)
+	A, B = (240, 531), (1350, 500)
+	C_NOR, D_NOR = (838, 343), (226, 333)
+	C_BIG, D_BIG = (790, 297), (240, 283)
+    # Crop image
+	X_MIN_CROP, Y_MIN_CROP = 570, 87
+	X_MAX_CROP, Y_MAX_CROP = 1920, 987
 elif POSITION_CAM.split(" ")[1] == '379':
-    # RA 379
-    # A, B = (30, 501), (821, 538)
-    # C, D = (857, 433), (337, 415)
-    A, B = (259, 439), (852, 468)
-    C, D = (877, 357), (533, 355)
+	# A, B = (259, 439), (852, 468)
+	# C, D = (877, 357), (533, 355)
+	A, B = (0, 592), (1243, 627)
+	C, D = (1312, 433), (627, 415)
+	# Crop image
+	X_MIN_CROP, Y_MIN_CROP = 0, 180
+	X_MAX_CROP, Y_MAX_CROP = 1350, 1080
 
-AREA_DETECTION = np.array([A, B, C, D], np.int32)
+AREA_DETECTION = np.array([A, B, C_NOR, D_NOR], np.int32)
 
 CLASESS_MODEL_SSDNET = [
-    'unlabeled', 'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 
-    'traffic light', 'fire hydrant', 'street sign', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 
-    'dog', 'horse', 'sheep', 'cow', 'elephant', 'bear', 'zebra', 'giraffe', 'hat', 'backpack', 'umbrella', 
-    'shoe', 'eye glasses', 'handbag', 'tie', 'suitcase', 'frisbee', 'skis', 'snowboard', 'sports ball', 
-    'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard', 'tennis racket', 'bottle', 'plate', 
-    'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple', 'sandwich', 'orange', 'broccoli', 
-    'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch', 'potted plant', 'bed', 'mirror', 
-    'dining table', 'window', 'desk', 'toilet', 'door', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 
-    'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'blender', 'book', 'clock', 'vase',
-    'scissors', 'teddy bear', 'hair drier', 'toothbrush'
+	'unlabeled', 'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 
+	'traffic light', 'fire hydrant', 'street sign', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 
+	'dog', 'horse', 'sheep', 'cow', 'elephant', 'bear', 'zebra', 'giraffe', 'hat', 'backpack', 'umbrella', 
+	'shoe', 'eye glasses', 'handbag', 'tie', 'suitcase', 'frisbee', 'skis', 'snowboard', 'sports ball', 
+	'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard', 'tennis racket', 'bottle', 'plate', 
+	'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple', 'sandwich', 'orange', 'broccoli', 
+	'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch', 'potted plant', 'bed', 'mirror', 
+	'dining table', 'window', 'desk', 'toilet', 'door', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 
+	'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'blender', 'book', 'clock', 'vase',
+	'scissors', 'teddy bear', 'hair drier', 'toothbrush'
 ]
 
 VEHICLE_CLASESS = ['car', 'bus', 'truck']
@@ -100,30 +108,30 @@ CLASESS_MODEL_LICENSE_PLATE = ['license_plate']
 MIN_CONFIDENCE = 0.2
 
 DETECTION_MODEL = {
-    'license_plate' : {
-        'filename': 'model_license_plate_iso_code.pt',
-        'url' : 'https://github.com/Alimustoofaa/1-PlateDetection/releases/download/model_yolov5/license_plat_indonesia_best.pt',
-        'file_size' : 14753191
-    },
-    'yolov5s': {
-        'filename': 'model_yolov5s.pt',
-        'url' : 'https://github.com/Alimustoofaa/1-PlateDetection/releases/download/model_yolov5/yolov5s.pt',
-        'file_size' : 14796495
-    }
+	'license_plate' : {
+		'filename': 'model_license_plate_iso_code.pt',
+		'url' : 'https://github.com/Alimustoofaa/1-PlateDetection/releases/download/model_yolov5/license_plat_indonesia_best.pt',
+		'file_size' : 14753191
+	},
+	'yolov5s': {
+		'filename': 'model_yolov5s.pt',
+		'url' : 'https://github.com/Alimustoofaa/1-PlateDetection/releases/download/model_yolov5/yolov5s.pt',
+		'file_size' : 14796495
+	}
 }
 
 REPLACE_NUMBER2ABJAD_DICT = {
-    '7': 'T',
-    '8': 'B',
-    '5': 'S',
-    '0': 'O',
-    '4': 'C'
+	'7': 'T',
+	'8': 'B',
+	'5': 'S',
+	'0': 'O',
+	'4': 'C'
 }
 
 REPLACE_ABJAD2NUMBER_DICT = {
-    'A': '4',
-    'O': '0',
-    'T': '7'
+	'A': '4',
+	'O': '0',
+	'T': '7'
 }
 
 __file_kd_wilayah = open(os.path.join(os.getcwd(),'./kode_wilayah.json'))
@@ -154,7 +162,7 @@ COMMAND_CAMERA_PROPERTY = 'v4l2-ctl -d 0 -c exposure=500000  -c saturation=5500'
 FPS = 30
 # -> Lounch string
 LAUNCH_STRING = 'appsrc name=source is-live=true block=true format=GST_FORMAT_TIME ' \
-                f'caps=video/x-raw,format=BGR,width=640,height=480,framerate={FPS}/1 ' \
-                '! videoconvert ! video/x-raw,format=I420 ' \
-                '! x264enc speed-preset=ultrafast tune=zerolatency ' \
-                '! rtph264pay config-interval=1 name=pay0 pt=96'
+				f'caps=video/x-raw,format=BGR,width=640,height=480,framerate={FPS}/1 ' \
+				'! videoconvert ! video/x-raw,format=I420 ' \
+				'! x264enc speed-preset=ultrafast tune=zerolatency ' \
+				'! rtph264pay config-interval=1 name=pay0 pt=96'
