@@ -15,9 +15,11 @@ from src.utils import (
 )
 
 from config import (
-	LAUNCH_STRING,
+	LAUNCH_STRING, FPS,
 	A, B, C, D, 
-	AREA_DETECTION, COMMAND_FFMPEG
+	AREA_DETECTION,
+	X_MIN_CROP, Y_MIN_CROP, X_MAX_CROP, Y_MAX_CROP,
+	COMMAND_FFMPEG
 )
 
 class Run_Application:
@@ -27,12 +29,12 @@ class Run_Application:
 		# Tracker
 		self.tracker		= EuclideanDistTracker()
 		self.unique_id		= list()
-
+		self.current_timestamp = 0
 		# RTMP Stream
 		self.ffmepg_command = subprocess.Popen(COMMAND_FFMPEG, stdin=subprocess.PIPE)
 
 	def process_trigger_vehicle(self, frame):
-		image = frame.copy()
+		image, image_process = frame.copy(), frame.copy()
 		# Vehicle detection and classification
 		try: vehicle_classification_list	= classification_vehicle(frame, log=False)
 		except: vehicle_classification_list = list()
@@ -48,22 +50,25 @@ class Run_Application:
 				# Calculate Centroid
 				x, y = int((x_min + x_max)/2), int((y_min + y_max)/2)
 				# Condition Count Object
-				if x in range(A[0], C[0]+50) and y in range(C[1],C[1]+50):
+				if x in range(D[0]-300, B[0]) and (y in range(C[1],C[1]+60) or y in range(D[1],D[1]+50)):
 					if not id in self.unique_id:
-						crop_img 		= frame[y_min-15:y_max+15, x_min-15:x_max+15]
 						timestamp_id 	= int(datetime.timestamp(datetime.now()))
-						result_vehicle	= [timestamp_id, crop_img, classes, conf]
-						Thread(target=main_ocr_license_plate, args=(crop_img, result_vehicle, )).start()
-						# Change color line
-						cv2.line(image, (D[0], D[1]), (C[0], C[1]), (0, 0, 225), thickness=2) #TOP
-						# Reset value unique_id
-						if len(self.unique_id) > 100: self.unique_id = list()
-						self.unique_id.append(id)
+						if self.current_timestamp != timestamp_id:
+							self.current_timestamp = timestamp_id
+							crop_img 		= image_process[y_min-15:y_max+15, x_min-15:x_max+15]
+							result_vehicle	= [timestamp_id, crop_img, classes, conf]
+							# cv2.imwrite(f'captures/{classes}_{str(timestamp_id)}.jpg', image)
+							Thread(target=main_ocr_license_plate, args=(crop_img, result_vehicle, )).start()
+							# Change color line
+							cv2.line(image, (D[0], D[1]), (C[0], C[1]), (0, 0, 225), thickness=2) #TOP
+							# Reset value unique_id
+							if len(self.unique_id) > 200: self.unique_id = list()
+							self.unique_id.append(id)
 				# Draw circle in centroid rectangle
 				cv2.circle(frame, (x,y), 2, (0, 0, 255), -1)
 
 		# Reset value trakcer id
-		if self.tracker.id_count > 200: self.tracker.id_count = 0
+		if self.tracker.id_count > 1000: self.tracker.id_count = 0
 
 		# Color Block
 		cv2.fillPoly(frame, [AREA_DETECTION],  (51, 153, 255))
@@ -82,8 +87,9 @@ class Run_Application:
 		while True:
 			ret, frame 	= self.cap.read()
 			if ret:
-				frame 	= self.process_trigger_vehicle(frame)
-				frame	= cv2.resize(frame, (640, 480), interpolation = cv2.INTER_AREA)
+				frame_crop = frame[Y_MIN_CROP:Y_MAX_CROP, X_MIN_CROP:X_MAX_CROP]
+				frame 	= self.process_trigger_vehicle(frame_crop)
+				frame	= cv2.resize(frame, (600, 400), interpolation = cv2.INTER_AREA)
 				self.ffmepg_command.stdin.write(frame.tobytes())
 
 aplication = Run_Application()

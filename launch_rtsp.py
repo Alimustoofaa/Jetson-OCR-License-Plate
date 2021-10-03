@@ -20,7 +20,12 @@ from src.utils import (
 	logging
 )
 
-from config import LAUNCH_STRING, FPS, A, B, C, D, AREA_DETECTION
+from config import (
+	LAUNCH_STRING, FPS,
+	A, B, C, D, 
+	AREA_DETECTION,
+	X_MIN_CROP, Y_MIN_CROP, X_MAX_CROP, Y_MAX_CROP
+)
 
 class SensorFactory(GstRtspServer.RTSPMediaFactory):
 	def __init__(self, **properties):
@@ -88,8 +93,10 @@ class SensorFactory(GstRtspServer.RTSPMediaFactory):
 		if self.cap.isOpened():
 			ret, frame 	= self.cap.read()
 			if ret:
-				frame = self.process_trigger_vehicle(frame)
-				data 			= cv2.resize(frame, (640, 480), interpolation = cv2.INTER_AREA).tostring()
+				# Crop frame ratio 3:2
+				frame_crop 		= frame[Y_MIN_CROP:Y_MAX_CROP, X_MIN_CROP:X_MAX_CROP]
+				frame 			= self.process_trigger_vehicle(frame_crop)
+				data 			= cv2.resize(frame, (600, 400), interpolation = cv2.INTER_AREA).tostring()
 				buf 			= Gst.Buffer.new_allocate(None, len(data), None); buf.fill(0, data)
 				buf.duration 	= self.duration
 				timestamp 		= self.number_frames * self.duration
