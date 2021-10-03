@@ -39,7 +39,7 @@ COMMAND_FFMPEG = [
 	'-vcodec', 'rawvideo',
 	'-pix_fmt', 'bgr24',
 	'-s', '600x400',
-	# '-r', '15',
+	'-r', '15',
 	'-i', '-',
 	'-c:v', 'libx264',
 	'-b:v', '300K',
