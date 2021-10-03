@@ -16,7 +16,7 @@ x_min_crop, y_min_crop = 0, 250
 x_max_crop, y_max_crop = 1400, 1080
 
 
-out =  cv2.VideoWriter('result_test_videoa.avi', cv2.VideoWriter_fourcc(*"XVID"), 30.0, (1400, 1080))
+out =  cv2.VideoWriter('result_test_videoa.avi', cv2.VideoWriter_fourcc(*"XVID"), 30.0, (1920, 1080))
 for _ in range(7):
 	subprocess.call([COMMAND_CAMERA_PROPERTY], shell=True)
 
@@ -25,10 +25,10 @@ start = time.time()
 while True:
 	ret, frame = camera.read()
 	if not ret: print('error'); break
-	image = frame[y_min_crop:y_max_crop, x_min_crop:x_max_crop]
+	# image = frame[y_min_crop:y_max_crop, x_min_crop:x_max_crop]
 
 	# cv2.imwrite('aa.jpg', frame); break
-	out.write(image)
+	out.write(frame)
 	
 	current_time = int((time.time() - start))
 # camera.release()

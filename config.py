@@ -29,13 +29,13 @@ RESOLUTIONS = {
 }
 URL_VEHICLE_API = 'http://149.129.48.59:8081/list_vehicles/add'
 
-_URL_STREAMING_RTMP = f'rtmp://149.129.48.59/live/restarea207a'
+_URL_STREAMING_RTMP = f'rtmp://149.129.48.59:1935/live/restarea88b/km88b'
 
 COMMAND_FFMPEG = [
 	'ffmpeg',
 	'-y',
 	'-f', 'rawvideo',
-	# '-stream_loop', '-1',
+	'-stream_loop', '-1',
 	'-vcodec', 'rawvideo',
 	'-pix_fmt', 'bgr24',
 	'-s', '600x400',
@@ -62,13 +62,18 @@ if POSITION_CAM.split(" ")[1] == '88A':
 	A, B = (816, 848), (1918, 735)
 	C, D = (1336, 598), (615, 606)
 elif POSITION_CAM.split(" ")[1] == '88B':
-    A, B = (645, 567), (1234, 369)
-    C, D = (691, 301), (100, 352)
+	A, B = (355, 814), (1312, 546)
+	C_NOR, D_NOR = (691, 477), (21, 606)
+	C_BIG, D_BIG = (583, 456), (0, 361)
+	 # Crop image
+	X_MIN_CROP, Y_MIN_CROP = 570, 0
+	X_MAX_CROP, Y_MAX_CROP = 1920, 900
+	
 elif POSITION_CAM.split(" ")[1] == '207':
 	A, B = (240, 531), (1350, 500)
 	C_NOR, D_NOR = (838, 343), (226, 333)
 	C_BIG, D_BIG = (790, 297), (240, 283)
-    # Crop image
+	# Crop image
 	X_MIN_CROP, Y_MIN_CROP = 570, 87
 	X_MAX_CROP, Y_MAX_CROP = 1920, 987
 elif POSITION_CAM.split(" ")[1] == '379':

@@ -52,10 +52,11 @@ class Run_Application:
 				# Condition Count Object
 				if classes in ['bus', 'truck']: C, D =  C_BIG, D_BIG
 				else: C, D = C_NOR, D_NOR
-				if x in range(A[0], C[0]+300) and (y in range(C[1],C[1]+25) or y in range(D[1],D[1]+25)):
+				if x in range(A[0], C[0]+500) and (y in range(C[1],C[1]+40) or y in range(D[1],D[1]+40)):
 					if not id in self.unique_id:
 						timestamp_id 	= int(datetime.timestamp(datetime.now()))
-						if self.current_timestamp != timestamp_id+1 or self.current_timestamp != timestamp_id:
+						# if self.current_timestamp != timestamp_id+1 and self.current_timestamp != timestamp_id:
+						if not timestamp_id in range(self.current_timestamp, self.current_timestamp+2):
 							self.current_timestamp = timestamp_id
 							crop_img 		= image_process[y_min:y_max, x_min:x_max]
 							result_vehicle	= [timestamp_id, crop_img, classes, conf]
@@ -94,8 +95,9 @@ class Run_Application:
 				frame 	= self.process_trigger_vehicle(frame_crop)
 				frame	= cv2.resize(frame, (600, 400), interpolation = cv2.INTER_AREA)
 				try: self.ffmepg_command.stdin.write(frame.tobytes())
-				except: continue
-				finally: self.ffmepg_command.stdin.write(frame.tobytes())
+				except:
+					self.ffmepg_command.stdin.close()
+					self.ffmepg_command = subprocess.Popen(COMMAND_FFMPEG, stdin=subprocess.PIPE)
 
 aplication = Run_Application()
 aplication.running_camera()
