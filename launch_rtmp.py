@@ -53,9 +53,9 @@ class Run_Application:
 				if x in range(D[0]-300, B[0]) and (y in range(C[1],C[1]+60) or y in range(D[1],D[1]+50)):
 					if not id in self.unique_id:
 						timestamp_id 	= int(datetime.timestamp(datetime.now()))
-						if self.current_timestamp != timestamp_id:
+						if self.current_timestamp != timestamp_id+1 and self.current_timestamp != timestamp_id:
 							self.current_timestamp = timestamp_id
-							crop_img 		= image_process[y_min-15:y_max+15, x_min-15:x_max+15]
+							crop_img 		= image_process[y_min:y_max, x_min:x_max]
 							result_vehicle	= [timestamp_id, crop_img, classes, conf]
 							# cv2.imwrite(f'captures/{classes}_{str(timestamp_id)}.jpg', image)
 							Thread(target=main_ocr_license_plate, args=(crop_img, result_vehicle, )).start()
@@ -64,6 +64,7 @@ class Run_Application:
 							# Reset value unique_id
 							if len(self.unique_id) > 200: self.unique_id = list()
 							self.unique_id.append(id)
+						else: self.current_timestamp = self.current_timestamp
 				# Draw circle in centroid rectangle
 				cv2.circle(frame, (x,y), 2, (0, 0, 255), -1)
 
@@ -90,7 +91,9 @@ class Run_Application:
 				frame_crop = frame[Y_MIN_CROP:Y_MAX_CROP, X_MIN_CROP:X_MAX_CROP]
 				frame 	= self.process_trigger_vehicle(frame_crop)
 				frame	= cv2.resize(frame, (600, 400), interpolation = cv2.INTER_AREA)
-				self.ffmepg_command.stdin.write(frame.tobytes())
+				try: self.ffmepg_command.stdin.write(frame.tobytes())
+				except: pass
+				finally: self.ffmepg_command.stdin.write(frame.tobytes())
 
 aplication = Run_Application()
 aplication.running_camera()

@@ -29,7 +29,7 @@ RESOLUTIONS = {
 }
 URL_VEHICLE_API = 'http://149.129.48.59:8081/list_vehicles/add'
 
-_URL_STREAMING_RTMP = f'rtmp://149.129.48.59:1935/live/{POSITION_CAM.split(" ")[1]}'
+_URL_STREAMING_RTMP = f'rtmp://149.129.48.59/live/restarea379a'
 
 COMMAND_FFMPEG = [
 	'ffmpeg',
