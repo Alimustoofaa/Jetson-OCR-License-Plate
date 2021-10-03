@@ -29,7 +29,7 @@ RESOLUTIONS = {
 }
 URL_VEHICLE_API = 'http://149.129.48.59:8081/list_vehicles/add'
 
-_URL_STREAMING_RTMP = f'rtmp://149.129.48.59/live/restarea207a'
+_URL_STREAMING_RTMP = f'rtmp://149.129.48.59/restarea207a/km207a'
 
 COMMAND_FFMPEG = [
 	'ffmpeg',
@@ -39,7 +39,7 @@ COMMAND_FFMPEG = [
 	'-vcodec', 'rawvideo',
 	'-pix_fmt', 'bgr24',
 	'-s', '600x400',
-	'-r', '15',
+	# '-r', '15',
 	'-i', '-',
 	'-c:v', 'libx264',
 	'-b:v', '300K',
